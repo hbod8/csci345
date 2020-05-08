@@ -1,8 +1,14 @@
+import java.util.Random;
+
+
 public class Player {
   private int credits = 0;
   private int dollars = 0;
-  private int rank = 0;
+  private int rank = 1;
   private Room room;
+  public boolean inScene;
+  Random dice = new Random();
+
   public Player(int startCredits, int startDollars, Room startRoom) {
     this.credits = startCredits;
     this.dollars = startDollars;
@@ -10,6 +16,37 @@ public class Player {
   }
   public Player(Room startRoom) {
     this.room = startRoom;
+  }
+  public void act() {
+    int roll = 0;
+    roll = dice.nextInt(6) + 1;
+    // check if you can act in rooms
+    if (!(this.room instanceof SetRoom)) {
+      throw new Exception("Player is not in a room that they can act in.");
+    }
+    // get room scene
+    //if (this.)
+    
+    // act...
+    //successful roll
+    if(roll >= ((SetRoom)this.room).getScene().getBudget()) {
+      //decrement shot counter
+      ((SetRoom)this.room).setShots(((SetRoom)this.room).getShots() - 1);
+      
+      //if on/off the card
+      if(inScene) {
+        this.credits = this.credits + 2;
+      }else {
+        this.dollars++;
+        this.credits++;
+      }
+    
+    //failed roll
+    } else {
+      if(!inScene) {
+        this.dollars++;
+      }
+    }
   }
   /**
    * @return the credits

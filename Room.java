@@ -16,4 +16,6 @@ public class Room {
   public boolean isAdjacent() {
     return false;
   }
+
+  
 }
