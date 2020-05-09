@@ -1,7 +1,8 @@
 public class Role {
   private Player player;
-  private int rehersals;
+  private int practiceChips;
   private int requiredRank;
+  
   public Role(int requiredRank) {
     this.requiredRank = requiredRank;
   }
@@ -14,8 +15,8 @@ public class Role {
   /**
    * @return the rehersals
    */
-  public int getRehersals() {
-    return rehersals;
+  public int getPracticeChips() {
+    return practiceChips;
   }
   public boolean isTaken() {
     return true;

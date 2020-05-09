@@ -1,9 +1,11 @@
 import java.util.Random;
+import java.lang.Exception;
 
 
 public class Player {
   private int credits = 0;
   private int dollars = 0;
+  private int practiceChips = 0;
   private int rank = 1;
   private Room room;
   public boolean inScene;
@@ -17,7 +19,7 @@ public class Player {
   public Player(Room startRoom) {
     this.room = startRoom;
   }
-  public void act() {
+  public void act() throws Exception {
     int roll = 0;
     roll = dice.nextInt(6) + 1;
     // check if you can act in rooms
@@ -48,6 +50,14 @@ public class Player {
       }
     }
   }
+
+  public void rehearse() throws Exception {
+    if(((SetRoom)this.room).getScene().getBudget() == (practiceChips + 1)) {
+      throw new Exception("Cannot rehearse anymore, must act.");
+    }
+    this.practiceChips++;
+  }
+
   /**
    * @return the credits
    */
