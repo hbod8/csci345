@@ -1,14 +1,14 @@
-import java.util.LinkedList;
-import javax.xml.*;
-import java.util.Scanner;
-
 public class Game {
   private LinkedList<Player> players;
   private int days;
+  private int maxDays;
   private LinkedList<Room> rooms;
   private Scanner s;
   public Game(int playerCount) throws Exception {
-    if (playerCount)
+    if (playerCount < 4) {
+      this.maxDays = 3;
+      for
+    }
 
   }
   public static void main(String[] args) {
