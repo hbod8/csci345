@@ -5,6 +5,7 @@ import java.lang.Exception;
 public class Player {
   private int credits = 0;
   private int dollars = 0;
+  private int practiceChips = 0;
   private int rank = 1;
   private Room room;
   public boolean inScene;
@@ -50,7 +51,16 @@ public class Player {
     }
   }
 
+<<<<<<< HEAD
   //performs
+=======
+  public void rehearse() throws Exception {
+    if(((SetRoom)this.room).getScene().getBudget() == (practiceChips + 1)) {
+      throw new Exception("Cannot rehearse anymore, must act.");
+    }
+    this.practiceChips++;
+  }
+>>>>>>> 875c380ea0d4da51c2d00c3527b09798f79c75e4
 
   /**
    * @return the credits

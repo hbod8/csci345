@@ -1,6 +1,6 @@
 public class Role {
   private Player player;
-  private int rehersals;
+  private int practiceChips;
   private int requiredRank;
   public Role(int requiredRank) {
     this.requiredRank = requiredRank;
