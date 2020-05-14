@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.lang.Exception;
 
 
 public class Player {
@@ -17,15 +18,15 @@ public class Player {
   public Player(Room startRoom) {
     this.room = startRoom;
   }
-  public void act() {
+
+  //performs acting////////////////
+  public void act() throws Exception {
     int roll = 0;
     roll = dice.nextInt(6) + 1;
     // check if you can act in rooms
     if (!(this.room instanceof SetRoom)) {
       throw new Exception("Player is not in a room that they can act in.");
     }
-    // get room scene
-    //if (this.)
     
     // act...
     //successful roll
@@ -48,6 +49,9 @@ public class Player {
       }
     }
   }
+
+  //performs
+
   /**
    * @return the credits
    */

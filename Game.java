@@ -7,7 +7,9 @@ public class Game {
   public Game(int playerCount) throws Exception {
     if (playerCount < 4) {
       this.maxDays = 3;
-      for
+      for (int i = 0; i < playerCount; i++) {
+        this.players.push(new Player());
+      }
     }
 
   }
@@ -22,5 +24,7 @@ public class Game {
     }
     Game activeGame = new Game(playerCount);
   }
-
+  public LinkedList<Room> getRooms() {
+    return this.rooms;
+  }
 }
