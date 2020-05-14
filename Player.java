@@ -11,12 +11,17 @@ public class Player {
   public boolean inScene;
   Random dice = new Random();
 
-  public Player(int startCredits, int startDollars, Room startRoom) {
-    this.credits = startCredits;
-    this.dollars = startDollars;
+
+  public Player(Room startRoom) {
     this.room = startRoom;
   }
-  public Player(Room startRoom) {
+  public Player(int startCredits, Room startRoom) {
+    this.credits = startCredits;
+    this.room = startRoom;
+  }
+  public Player(int startCredits, int startRank, Room startRoom) {
+    this.credits = startCredits;
+    this.rank = startRank;
     this.room = startRoom;
   }
 
@@ -51,16 +56,12 @@ public class Player {
     }
   }
 
-<<<<<<< HEAD
-  //performs
-=======
   public void rehearse() throws Exception {
     if(((SetRoom)this.room).getScene().getBudget() == (practiceChips + 1)) {
       throw new Exception("Cannot rehearse anymore, must act.");
     }
     this.practiceChips++;
   }
->>>>>>> 875c380ea0d4da51c2d00c3527b09798f79c75e4
 
   /**
    * @return the credits

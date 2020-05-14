@@ -1,9 +1,9 @@
-import java.util.LinkedList;
+import java.util.Map;
 
 public class Room {
-  private LinkedList<Room> adjacentRooms;
+  private Map<String, Room> adjacentRooms;
   private String name;
-  public Room(LinkedList<Room> adjacentRooms, String name) {
+  public Room(Map<String, Room> adjacentRooms, String name) {
     this.adjacentRooms = adjacentRooms;
     this.name = name;
   }
@@ -16,6 +16,8 @@ public class Room {
   public boolean isAdjacent() {
     return false;
   }
-
+  public Map<String, Room> getAdjRooms() {
+    return this.adjacentRooms;
+  }
   
 }

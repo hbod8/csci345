@@ -14,9 +14,9 @@ public class Role {
   /**
    * @return the rehersals
    */
-  public int getRehersals() {
-    return rehersals;
-  }
+  // public int getRehersals() {
+  //   return this.rehersals;
+  // }
   public boolean isTaken() {
     return true;
   }
