@@ -1,9 +1,10 @@
+import java.util.List;
 import java.util.Map;
 
 public class Room {
-  private Map<String, Room> adjacentRooms;
+  private List<String> adjacentRooms;
   private String name;
-  public Room(Map<String, Room> adjacentRooms, String name) {
+  public Room(List<String> adjacentRooms, String name) {
     this.adjacentRooms = adjacentRooms;
     this.name = name;
   }
@@ -16,7 +17,7 @@ public class Room {
   public boolean isAdjacent() {
     return false;
   }
-  public Map<String, Room> getAdjRooms() {
+  public List<String> getAdjRooms() {
     return this.adjacentRooms;
   }
   

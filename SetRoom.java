@@ -1,16 +1,16 @@
-import java.util.LinkedList;
+import java.util.List;
 
 public class SetRoom extends Room {
-  private LinkedList<Role> extras;
+  private List<Role> extras;
   private Scene scene;
   private int shots = 3;
-  public SetRoom(LinkedList<Room> adjacentRooms, String name) {
+  public SetRoom(List<String> adjacentRooms, String name) {
     super(adjacentRooms, name);
   }
   /**
    * @return the extras
    */
-  public LinkedList<Role> getExtras() {
+  public List<Role> getExtras() {
     return extras;
   }
   /**

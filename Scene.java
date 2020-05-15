@@ -1,17 +1,17 @@
-import java.util.LinkedList;
+import java.util.List;
 
 public class Scene {
-  private LinkedList<Role> roles;
+  private List<Role> roles;
   public boolean visible;
   public int scene;
   private int budget;
-  public Scene(LinkedList<Role> roles) {
+  public Scene(List<Role> roles) {
     this.roles = roles;
   }
   /**
    * @return the roles
    */
-  public LinkedList<Role> getRoles() {
+  public List<Role> getRoles() {
     return roles;
   }
 

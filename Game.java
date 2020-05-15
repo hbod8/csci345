@@ -1,35 +1,35 @@
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.lang.Exception;
 
 public class Game {
-  private LinkedList<Player> players;
+  private List<Player> players;
   private int days;
   private int maxDays = 4;
   private Map<String, Room> rooms;
   private static Scanner s;
   public Game(int playerCount) {
     for (int i = 0; i < playerCount; i++) {
-      this.players.push(new Player(rooms.getFirst()));
+      this.players.add(new Player(rooms.get("office")));
     }
   }
   public Game(int playerCount, int maxDays) {
     this.maxDays = maxDays;
     for (int i = 0; i < playerCount; i++) {
-      this.players.push(new Player(rooms.getFirst()));
+      this.players.add(new Player(rooms.get("office")));
     }
   }
   public Game(int playerCount, int maxDays, int startingCredits) {
     this.maxDays = maxDays;
     for (int i = 0; i < playerCount; i++) {
-      this.players.push(new Player(startingCredits, rooms.removeFirst()));
+      this.players.add(new Player(startingCredits, rooms.get("office")));
     }
   }
   public Game(int playerCount, int maxDays, int startingCredits, int startingRank) {
     this.maxDays = maxDays;
     for (int i = 0; i < playerCount; i++) {
-      this.players.push(new Player(startingCredits, startingRank, rooms.removeFirst()));
+      this.players.add(new Player(startingCredits, startingRank, rooms.get("office")));
     }
   }
   public static void main(String[] args) throws Exception {
