@@ -74,6 +74,7 @@ public class Game {
   //loops player turns
   private void gameLoop() {
       //while(getScenesOnBoard() > 1) {
+        Player curPlayer = this.players.get(0);
         while (this.getScenesOnBoard() > 1) {
           System.out.println(curPlayer.getName() + "'s turn!");
           printInfo(curPlayer);
@@ -95,6 +96,11 @@ public class Game {
             case "end":
               break;
 
+          }
+          if (this.players.indexOf(curPlayer) < this.players.size() - 1) {
+            curPlayer = this.players.get(this.players.indexOf(curPlayer) + 1);
+          } else {
+            curPlayer = this.players.get(0);
           }
         }
         if (this.days <= this.maxDays) {

@@ -110,7 +110,7 @@ public class Player {
   }
 
   public int getTokens() {
-    return this.practiceChips();
+    return this.practiceChips;
   }
   /**
    * @param credits the credits to set
