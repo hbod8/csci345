@@ -9,6 +9,7 @@ public class Player {
   private int rank = 1;
   private Room room;
   public boolean inScene;
+  private String name;
   Random dice = new Random();
 
 
@@ -26,13 +27,19 @@ public class Player {
   }
 
   //performs acting////////////////
-  public void act() throws Exception {
+  public void act() {
     int roll = 0;
     roll = dice.nextInt(6) + 1;
     // check if you can act in rooms
     if (!(this.room instanceof SetRoom)) {
-      throw new Exception("Player is not in a room that they can act in.");
+      System.out.println("Player is not in a room that they can act in.");
+      return;
     }
+    // check player has role
+    // if (this.role == null) {
+    //   System.out.println("Player is not in a role.");
+    //   return;
+    // }
     
     // act...
     //successful roll
@@ -88,6 +95,12 @@ public class Player {
     return room;
   }
   /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+  /**
    * @param credits the credits to set
    */
   public void setCredits(int credits) {
@@ -110,5 +123,11 @@ public class Player {
    */
   public void setRoom(Room room) {
     this.room = room;
+  }
+  /**
+   * @param name the name to be set
+   */
+  public void setName(String name) {
+    this.name = name;
   }
 }
