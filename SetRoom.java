@@ -4,8 +4,9 @@ public class SetRoom extends Room {
   private List<Role> extras;
   private Scene scene;
   private int shots = 3;
-  public SetRoom(List<String> adjacentRooms, String name) {
+  public SetRoom(List<String> adjacentRooms, String name, List<Role> extras) {
     super(adjacentRooms, name);
+    this.extras = extras;
   }
   /**
    * @return the extras
