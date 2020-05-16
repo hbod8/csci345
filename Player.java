@@ -70,6 +70,14 @@ public class Player {
     this.practiceChips++;
   }
 
+  public void move(String roomname, Room newroom) {
+    if (!this.room.isAdjacent(roomname)) {
+      System.out.println("Sorry that room isnt adjacent.");
+    } else {
+      this.room = newroom;
+    }
+  }
+
   /**
    * @return the credits
    */
@@ -99,6 +107,10 @@ public class Player {
    */
   public String getName() {
     return name;
+  }
+
+  public int getTokens() {
+    return this.practiceChips();
   }
   /**
    * @param credits the credits to set
@@ -130,4 +142,5 @@ public class Player {
   public void setName(String name) {
     this.name = name;
   }
+
 }

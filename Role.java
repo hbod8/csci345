@@ -46,5 +46,9 @@ public class Role {
   public int getRank() {
     return this.requiredRank;
   }
+
+  public Player getPlayer() {
+    return this.player;
+  }
   
 }

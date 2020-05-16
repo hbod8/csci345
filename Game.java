@@ -54,6 +54,7 @@ public class Game {
     for (Room room : rooms.values()) {
       if (room instanceof SetRoom) {
         ((SetRoom)room).setScene(deck.remove(0));
+        ((SetRoom)room).setShots(3);
       }
     }
   }
@@ -67,27 +68,71 @@ public class Game {
       curPlayer.setName(playerName);
       i++;
     }
-    
+    clearScreen();    
   }
 
   //loops player turns
   private void gameLoop() {
-    System.out.println(getScenesOnBoard());
-
-      while(getScenesOnBoard() > 1) {
-        for(Player curPlayer : players) {
+      //while(getScenesOnBoard() > 1) {
+        while (this.getScenesOnBoard() > 1) {
           System.out.println(curPlayer.getName() + "'s turn!");
           printInfo(curPlayer);
 
-          System.out.println("Wou");
+          System.out.println("Which action?\n >move\n >act\n >rehearse\n >upgrade\n >end");
 
+          String action = in.next();
+          clearScreen();
+
+          switch (action) {
+            case "move":
+              break;
+            case "act":
+              break;
+            case "rehearse":
+              break;
+            case "upgrade":
+              break;
+            case "end":
+              break;
+
+          }
         }
-      }
-      days++;
+        if (this.days <= this.maxDays) {
+          //endGame()
+        } else {
+          this.days++;
+        }
   }
 
+  //prints all player info
   private void printInfo(Player curPlayer) {
     System.out.println("Day " + days + " of " + maxDays);
+    System.out.println("Location: " + curPlayer.getRoom().getName());
+    System.out.println("Rank: " + curPlayer.getRank());
+    
+    System.out.print("Role: ");
+    if(curPlayer.getRoom() instanceof SetRoom) {
+      for(Role curRole : ((SetRoom)(curPlayer.getRoom())).getExtras()) {
+        if(curPlayer == curRole.getPlayer()) {
+          System.out.println(curRole.getName() + " in the " + curPlayer.getRoom().getName());
+        }
+      }
+
+      if(((SetRoom)(curPlayer.getRoom())).getScene() != null) {
+        for(Role curRole : ((SetRoom)(curPlayer.getRoom())).getScene().getRoles()) {
+          if(curPlayer == curRole.getPlayer()) {
+            System.out.println(curRole.getName() + " in the " + curPlayer.getRoom().getName());
+          }
+        }
+      }
+    }else {
+      System.out.println(curPlayer.getRoom().getName());
+    }
+
+    System.out.println("Cash: " + curPlayer.getDollars());
+    System.out.println("Credits: " + curPlayer.getCredits());
+    System.out.println("Rehearse tokens: " + curPlayer.getTokens());
+
   }
 
   private int getScenesOnBoard() {
@@ -99,6 +144,12 @@ public class Game {
     }
     return scenes;
   }
+
+  //clears the console
+  public static void clearScreen() {  
+    System.out.print("\033[H\033[2J");  
+    System.out.flush();  
+  } 
 
   public static void main(String[] args) throws Exception {
     Scanner s = new Scanner(System.in);

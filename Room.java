@@ -13,8 +13,8 @@ public class Room {
   public String getName() {
     return name;
   }
-  public boolean isAdjacent() {
-    return false;
+  public boolean isAdjacent(String roomname) {
+    return this.adjacentRooms.contains(roomname);
   }
   public List<String> getAdjRooms() {
     return this.adjacentRooms;
