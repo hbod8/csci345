@@ -14,7 +14,12 @@ public class Room {
     return name;
   }
   public boolean isAdjacent(String roomname) {
-    return this.adjacentRooms.contains(roomname);
+    for (String name : this.adjacentRooms) {
+      if (name.equals(roomname)) {
+        return true;
+      }
+    }
+    return false;
   }
   public List<String> getAdjRooms() {
     return this.adjacentRooms;

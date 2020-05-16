@@ -1,5 +1,7 @@
 import java.util.Random;
 import java.lang.Exception;
+import java.util.List;
+import java.util.LinkedList;
 
 
 public class Player {
@@ -12,6 +14,13 @@ public class Player {
   private String name;
   Random dice = new Random();
 
+  private final int[][] upgradeCosts = {
+    {4, 5},
+    {10, 10},
+    {18, 15},
+    {28, 20},
+    {40, 25}
+  };
 
   public Player(Room startRoom) {
     this.room = startRoom;
@@ -27,25 +36,28 @@ public class Player {
   }
 
   //performs acting////////////////
-  public void act() {
+  public boolean act() {
     int roll = 0;
     roll = dice.nextInt(6) + 1;
     // check if you can act in rooms
     if (!(this.room instanceof SetRoom)) {
       System.out.println("Player is not in a room that they can act in.");
-      return;
+      return false;
     }
-    // check player has role
-    // if (this.role == null) {
-    //   System.out.println("Player is not in a role.");
-    //   return;
-    // }
+    if (((SetRoom)this.room).getShots() < 1) {
+      System.out.println("Whoops no more shots");
+      return false;
+    }
     
     // act...
     //successful roll
-    if(roll >= ((SetRoom)this.room).getScene().getBudget()) {
+    if(roll + practiceChips >= ((SetRoom)this.room).getScene().getBudget()) {
+      System.out.println("Success!");
       //decrement shot counter
       ((SetRoom)this.room).setShots(((SetRoom)this.room).getShots() - 1);
+      if (((SetRoom)this.room).getShots() == 0) {
+        ((SetRoom)this.room).setScene(null);
+      }
       
       //if on/off the card
       if(inScene) {
@@ -57,25 +69,111 @@ public class Player {
     
     //failed roll
     } else {
+      System.out.println("Try harder next time!");
       if(!inScene) {
         this.dollars++;
       }
     }
+    return true;
   }
 
-  public void rehearse() throws Exception {
+  public boolean rehearse() {
     if(((SetRoom)this.room).getScene().getBudget() == (practiceChips + 1)) {
-      throw new Exception("Cannot rehearse anymore, must act.");
+      System.out.println("Cannot rehearse anymore, must act.");
+      return false;
     }
     this.practiceChips++;
+    return true;
   }
 
-  public void move(String roomname, Room newroom) {
+  public boolean move(String roomname, Room newroom) {
     if (!this.room.isAdjacent(roomname)) {
       System.out.println("Sorry that room isnt adjacent.");
+      return false;
     } else {
       this.room = newroom;
+      return true;
     }
+  }
+
+  public boolean upgrade(int level, boolean credits) {
+    if (level > 6 || level < 2) {
+      System.out.println("Sorry, you can only upgrade to a rank of 2-6.");
+      return false;
+    }
+    if (credits) {
+      if (this.getCredits() >= upgradeCosts[level - 2][1]) {
+        this.setCredits(this.getCredits() - upgradeCosts[level - 2][1]);
+        this.rank = level;
+        System.out.printf("Congrats you are now rank %d\n", level);
+      } else {
+        System.out.printf("Sorry you dont have enough credits for that. You need %d credits for rank %d.\n", upgradeCosts[level - 2][1], level);
+        return false;
+      }
+    } else {
+      if (this.getDollars() >= upgradeCosts[level - 2][0]) {
+        this.setDollars(this.getDollars() - upgradeCosts[level - 2][0]);
+        this.rank = level;
+        System.out.printf("Congrats you are now rank %d\n", level);
+      } else {
+        System.out.printf("Sorry you dont have enough dollars for that. You need %d dollars for rank %d.\n", upgradeCosts[level - 2][0], level);
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  //returns true/false if on a role or not
+  public boolean onRole() {
+    if(this.room instanceof SetRoom) {
+      for(Role curRole : ((SetRoom)this.room).getExtras()) {
+        if(this == curRole.getPlayer()) {
+          return true;
+        }
+      }
+      if(((SetRoom)this.room).getScene() != null) {
+        for(Role curRole : ((SetRoom)this.room).getScene().getRoles()) {
+          if(this == curRole.getPlayer()) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  //returns Role object that player is on
+  public Role getRole() {
+    if(this.room instanceof SetRoom) {
+      for(Role curRole : ((SetRoom)this.room).getExtras()) {
+        if(this == curRole.getPlayer()) {
+          return curRole;
+        }
+      }
+      if(((SetRoom)this.room).getScene() != null) {
+        for(Role curRole :  ((SetRoom)this.room).getScene().getRoles()) {
+          if(this == curRole.getPlayer()) {
+            return curRole;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  public List<Role> getRoles() {
+    List<Role> roles = new LinkedList<Role>();
+    if(this.room instanceof SetRoom) {
+      if(((SetRoom)this.room).getScene() != null) {
+        for(Role curRole :  ((SetRoom)this.room).getScene().getRoles()) {
+          roles.add(curRole);
+        }
+      }
+      for(Role curRole : ((SetRoom)this.room).getExtras()) {
+        roles.add(curRole);
+      }
+    }
+    return roles;
   }
 
   /**

@@ -73,41 +73,115 @@ public class Game {
 
   //loops player turns
   private void gameLoop() {
-      //while(getScenesOnBoard() > 1) {
-        Player curPlayer = this.players.get(0);
-        while (this.getScenesOnBoard() > 1) {
-          System.out.println(curPlayer.getName() + "'s turn!");
+    boolean gameEnded = false;
+    while (!gameEnded) {
+      Player curPlayer = this.players.get(0);
+      while (this.getScenesOnBoard() > 1) {
+        System.out.println(curPlayer.getName() + "'s turn!");
+        boolean endOfTurn = false;
+        while (!endOfTurn) {
+          boolean hasMoved = false;
+          boolean hasActed = false;
+
           printInfo(curPlayer);
 
-          System.out.println("Which action?\n >move\n >act\n >rehearse\n >upgrade\n >end");
+          System.out.println("Which action " + curPlayer.getName() + "?\n >move\n >take role\n >act\n >rehearse\n >upgrade\n >end");
 
-          String action = in.next();
+          String action = in.nextLine();
           clearScreen();
 
+        
           switch (action) {
             case "move":
+              if(hasMoved) {
+                System.out.println("You already moved!");
+              } else if(hasActed) {
+                  System.out.println("You already acted!");
+              }else {
+                System.out.println("Where would you like to move?");
+                for(String adjRoom : curPlayer.getRoom().getAdjRooms()) {
+                  System.out.println(" >" + adjRoom);
+                }
+                
+                String desiredRoomName = in.nextLine();
+                hasMoved = curPlayer.move(desiredRoomName, this.rooms.get(desiredRoomName));
+              }
+              break;
+            case "take role":
+              if (!(curPlayer.getRoom() instanceof SetRoom)) {
+                System.out.println("Whoops you cannot take a role in the trailer or office!");
+                break;
+              }
+              System.out.println("Possible roles:");
+              List<Role> listOfRoles = curPlayer.getRoles();
+              for (int i = 0; i < listOfRoles.size(); i++) {
+                System.out.printf(" #%d : %s with a required rank of %d\n", i, listOfRoles.get(i).getName(), listOfRoles.get(i).getRank());
+              }
+              System.out.println("Which number role do you want?");
+              int desiredNumRole = in.nextInt();
+              while (desiredNumRole < 0 || desiredNumRole > listOfRoles.size() - 1) {
+                System.out.println("Seems like thats not a number listed... try again.");
+                desiredNumRole = in.nextInt();
+              }
+              in.nextLine();
+              Role desiredRole = listOfRoles.get(desiredNumRole);
+              desiredRole.take(curPlayer);
+              //role.take()
               break;
             case "act":
+              if(hasMoved) {
+                System.out.println("You already moved!");
+              } else if(hasActed) {
+                  System.out.println("You already acted!");
+              } else {
+                endOfTurn = curPlayer.act();
+              }
               break;
             case "rehearse":
+              endOfTurn = curPlayer.rehearse();
               break;
             case "upgrade":
+              //upgrade rank
+              System.out.println("What rank do you want?");
+              int desiredLevel = in.nextInt();
+              System.out.println("Do you want to use credits or dollars?");
+              String paymentMethod;
+              boolean selectedMethod = false;
+              boolean success = false;
+              while (!selectedMethod) {
+                paymentMethod = in.nextLine();
+                if (paymentMethod.equals("credits")) {
+                  success = curPlayer.upgrade(desiredLevel, true);
+                  selectedMethod = true;
+                } else if (paymentMethod.equals("dollars")) {
+                  success = curPlayer.upgrade(desiredLevel, false);
+                  selectedMethod = true;
+                } else {
+                  System.out.println("Sorry we dont accept that payment method here... \"credits\" or \"dollars\"?");
+                  paymentMethod = in.nextLine();
+                }
+              }
+              if (hasMoved && success) endOfTurn = true;
               break;
             case "end":
+              endOfTurn = true;
               break;
-
-          }
-          if (this.players.indexOf(curPlayer) < this.players.size() - 1) {
-            curPlayer = this.players.get(this.players.indexOf(curPlayer) + 1);
-          } else {
-            curPlayer = this.players.get(0);
           }
         }
-        if (this.days <= this.maxDays) {
-          //endGame()
+        if (this.players.indexOf(curPlayer) < this.players.size() - 1) {
+          curPlayer = this.players.get(this.players.indexOf(curPlayer) + 1);
         } else {
-          this.days++;
+          curPlayer = this.players.get(0);
         }
+      }
+      if (this.days <= this.maxDays) {
+        //endGame()
+        gameEnded = true;
+      } else {
+        this.days++;
+      }
+    }
+    System.out.println("Seems like you made it far enough testing our program, heres a gold star.");
   }
 
   //prints all player info
@@ -116,28 +190,15 @@ public class Game {
     System.out.println("Location: " + curPlayer.getRoom().getName());
     System.out.println("Rank: " + curPlayer.getRank());
     
-    System.out.print("Role: ");
-    if(curPlayer.getRoom() instanceof SetRoom) {
-      for(Role curRole : ((SetRoom)(curPlayer.getRoom())).getExtras()) {
-        if(curPlayer == curRole.getPlayer()) {
-          System.out.println(curRole.getName() + " in the " + curPlayer.getRoom().getName());
-        }
-      }
-
-      if(((SetRoom)(curPlayer.getRoom())).getScene() != null) {
-        for(Role curRole : ((SetRoom)(curPlayer.getRoom())).getScene().getRoles()) {
-          if(curPlayer == curRole.getPlayer()) {
-            System.out.println(curRole.getName() + " in the " + curPlayer.getRoom().getName());
-          }
-        }
-      }
+    if(curPlayer.onRole()) {
+      System.out.println("Role: " + curPlayer.getRole().getName());
     }else {
-      System.out.println(curPlayer.getRoom().getName());
+      System.out.println("Role: ----");
     }
 
     System.out.println("Cash: " + curPlayer.getDollars());
     System.out.println("Credits: " + curPlayer.getCredits());
-    System.out.println("Rehearse tokens: " + curPlayer.getTokens());
+    System.out.println("Rehearse tokens: " + curPlayer.getTokens() + "\n");
 
   }
 

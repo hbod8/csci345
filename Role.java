@@ -1,6 +1,5 @@
 public class Role {
   private Player player;
-  private int practiceChips = 0;
   private int requiredRank;
   private String name;
   public Role(int requiredRank, String name) {
@@ -19,11 +18,13 @@ public class Role {
   public boolean isTaken() {
     return (this.player != null);
   }
-  public void reherse() {
-    this.practiceChips++;
-  }
-  public void take(Player player) {
+  public boolean take(Player player) {
+    if (player.getRank() < this.requiredRank) {
+      System.out.println("Sorry bud, you need a little more experience for that role.");
+      return false;
+    }
     this.player = player;
+    return true;
   }
 
   /**
