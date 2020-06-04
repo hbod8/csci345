@@ -94,6 +94,18 @@ public class Board extends JFrame {
     bMove.setBounds(icon.getIconWidth() + 10, 90, 100, 20);
     bMove.addMouseListener(new boardMouseListener());
 
+    /* Loop through rooms */
+      /* Create JButton with room xyhw and display clear */
+      /* Add JButton to JLayeredFrame, IMPORTant: must be a layer below you add roles. */
+      /* Add JButton to JLayeredFrame */
+      /* Loop thorugh off-card roles */
+        /* Create JButton with icon */
+        /* Add JButton to JLayeredFrame */
+      /* Loop through on card roles */
+        /* Create JButton with icon */
+        /* Add JButton to JLayeredFrame */
+
+
     // Place the action buttons in the top layer
     bPane.add(bAct, 2);
     bPane.add(bRehearse, 2);
