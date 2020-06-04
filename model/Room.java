@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-public class Room extends ImageLocation {
+public class Room extends Area {
   private List<String> adjacentRooms;
   private String name;
   public Room(List<String> adjacentRooms, String name, int x, int y, int w, int h) {

@@ -58,6 +58,11 @@ public class Game {
     }
   }
 
+  //returns room map
+  public Map<String, Room> getRoomMap() {
+    return this.rooms;
+  }
+
   // aquires and sets player names
   /* private void setPlayerNames() {
     int i = 1;

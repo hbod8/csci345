@@ -8,9 +8,13 @@ import javax.swing.JLayeredPane;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Color;
+import java.util.Map;
 
 import controller.GameController;
 import model.Game;
+import model.Room;
+import model.Role;
+import model.SetRoom;
 
 public class Board extends JFrame {
 
@@ -31,6 +35,9 @@ public class Board extends JFrame {
   // JLayered Pane
   JLayeredPane bPane;
 
+  /* Image folder location */
+  private static final String imageFolder = "assets/images/";
+
   public Board(Game game, GameController gameController) {
     // Set the title of the JFrame
     super("Deadwood");
@@ -42,7 +49,7 @@ public class Board extends JFrame {
 
     // Create the deadwood board
     boardlabel = new JLabel();
-    ImageIcon icon = new ImageIcon("board.jpg");
+    ImageIcon icon = new ImageIcon(imageFolder + "board.jpg");
     boardlabel.setIcon(icon);
     boardlabel.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
 
@@ -94,7 +101,35 @@ public class Board extends JFrame {
     bMove.setBounds(icon.getIconWidth() + 10, 90, 100, 20);
     bMove.addMouseListener(new boardMouseListener());
 
-    /* Loop through rooms */
+    /* Creates buttons for every room */
+    for (Room room : game.getRoomMap().values()) {
+        JButton button1 = new JButton();
+
+        //set bounds for button
+        button1.setBounds(room.getX(), room.getY(), room.getW(), room.getH());
+        
+        //make button transparent
+        button1.setOpaque(false);
+        button1.setContentAreaFilled(false);
+        button1.setBorderPainted(false);
+
+        //add the button
+        bPane.add(button1);
+
+        //check if room is a setroom
+        if(room instanceof SetRoom) {
+            //loop through extras (off-card roles)
+            for(Role curRole : ((SetRoom)room).getExtras()) {
+                JButton button2 = new JButton();
+                button2.setBounds(curRole.getX(), curRole.getY(), curRole.getW(), curRole.getH());
+                button2.setOpaque(false);
+                button2.setContentAreaFilled(false);
+                button2.setBorderPainted(false);
+            }
+        }
+    }
+
+
       /* Create JButton with room xyhw and display clear */
       /* Add JButton to JLayeredFrame, IMPORTant: must be a layer below you add roles. */
       /* Add JButton to JLayeredFrame */

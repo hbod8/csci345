@@ -1,12 +1,12 @@
 package model;
 
-public class ImageLocation {
+public class Area {
   private int x;
   private int y;
   private int h;
   private int w;
 
-  public ImageLocation(int x, int y, int h, int w) {
+  public Area(int x, int y, int h, int w) {
     this.x = x;
     this.y = y;
     this.h = h;

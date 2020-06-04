@@ -1,15 +1,13 @@
 package model;
 
-public class Role extends ImageLocation {
-  private String imageName;
+public class Role extends Area {
   private Player player;
   private int requiredRank;
   private String name;
-  public Role(int requiredRank, String name, String imageName, int x, int y, int w, int h) {
+  public Role(int requiredRank, String name, int x, int y, int w, int h) {
     super(x, y, h, w);
     this.requiredRank = requiredRank;
     this.name = name;
-    this.imageName = imageName;
   }
   public void free() {
     this.player = null;
