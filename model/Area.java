@@ -1,5 +1,7 @@
 package model;
 
+import java.io.IOException;
+
 public class Area {
   private int x;
   private int y;

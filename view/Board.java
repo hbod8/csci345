@@ -149,6 +149,10 @@ public class Board extends JFrame {
     bPane.add(bMove, 2);
   }
 
+  /* @TODO paintPlayer(Player) */
+
+  /* @TODO paintScene(Scene) */
+
   class boardMouseListener implements MouseListener {
     // Code for the different button clicks
     public void mouseClicked(MouseEvent e) {

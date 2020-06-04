@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 
-public class Player {
+public class Player extends Area {
   private int credits = 0;
   private int dollars = 0;
   private int practiceChips = 0;
@@ -87,6 +87,7 @@ public class Player {
       return false;
     } else {
       this.room = newroom;
+      /* @TODO update player area */
       return true;
     }
   }

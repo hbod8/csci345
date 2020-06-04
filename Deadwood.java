@@ -9,8 +9,11 @@ public class Deadwood {
     System.out.println("Starting Deadwood...");
     int players = Integer.parseInt(JOptionPane.showInputDialog(null, "How many players?"));
 
-    /* Create instances of Models. */
     Game game = null;
+    GameController gameController = null;
+    Board gameBoard = null;
+
+    /* Create instances of Models. */
     try {
       game = new Game(players);
     } catch (Exception e) {
@@ -19,10 +22,10 @@ public class Deadwood {
     }
 
     /* Create Instances of Controllers. */
-    GameController gameController = new GameController(game);
+    gameController = new GameController(game);
 
     /* Create instances of Views. */
-    Board gameBoard = new Board(game, gameController);
+    gameBoard = new Board(game, gameController);
     gameBoard.setVisible(true);
   }
 }
