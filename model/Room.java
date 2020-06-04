@@ -2,12 +2,14 @@ package model;
 
 import java.util.List;
 
-public class Room {
+public class Room extends ImageLocation {
   private List<String> adjacentRooms;
   private String name;
-  public Room(List<String> adjacentRooms, String name) {
+  public Room(List<String> adjacentRooms, String name, int x, int y, int w, int h) {
+    super(x, y, h, w);
     this.adjacentRooms = adjacentRooms;
     this.name = name;
+    
   }
   /**
    * @return the name

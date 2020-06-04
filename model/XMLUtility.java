@@ -8,7 +8,7 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
 public class XMLUtility {
-  public Map<String, Room> getRoomsFromXML() {
+  public static Map<String, Room> parseRoomsFromXML() {
     Map<String, Room> roomList = new HashMap<String, Room>();
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -45,7 +45,8 @@ public class XMLUtility {
     }
     return roomList;
   }
-  public List<Scene> getScenesFromXML() {
+
+  public static List<Scene> parseScenesFromXML() {
     List<Scene> sceneList = new LinkedList<Scene>();
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -87,7 +88,7 @@ public class XMLUtility {
     return sceneList;
   }
 
-  private void parseOffCardRoles(Node element, SetRoom newRoom) {
+  private static void parseOffCardRoles(Node element, SetRoom newRoom) {
     // parse roles
     NodeList children = element.getChildNodes();
     // Loop through nodes
@@ -114,7 +115,7 @@ public class XMLUtility {
     }
   }
 
-  private void parseNeighbors(Node element, Room newRoom) {
+  private static void parseNeighbors(Node element, Room newRoom) {
     // get neighbors
     NodeList children = element.getChildNodes();
     // Loop though child nodes
@@ -137,8 +138,7 @@ public class XMLUtility {
 
   public static void main(String[] args) {
     System.out.println("Test Rooms:");
-    XMLUtility c = new XMLUtility();
-    Map<String, Room> r = c.getRoomsFromXML();
+    Map<String, Room> r = XMLUtility.parseRoomsFromXML();
     for (Room room : r.values()) {
       System.out.printf("\t%s:\n\t\tAdjacent Rooms:\n", room.getName());
       for (String adj : r.get(room.getName()).getAdjRooms()) {
@@ -152,7 +152,7 @@ public class XMLUtility {
       }
     }
     System.out.println("Test Scenes:");
-    List<Scene> s = c.getScenesFromXML();
+    List<Scene> s = XMLUtility.parseScenesFromXML();
     for (Scene scene : s) {
       System.out.printf("\t%s (%d):\n", scene.getName(), scene.getBudget());
       for (Role role : scene.getRoles()) {

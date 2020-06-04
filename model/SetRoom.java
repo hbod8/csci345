@@ -6,8 +6,8 @@ public class SetRoom extends Room {
   private List<Role> extras;
   private Scene scene;
   private int shots = 3;
-  public SetRoom(List<String> adjacentRooms, String name, List<Role> extras) {
-    super(adjacentRooms, name);
+  public SetRoom(List<String> adjacentRooms, String name, List<Role> extras, int x, int y, int w, int h) {
+    super(adjacentRooms, name, x, y, w, h);
     this.extras = extras;
   }
   /**

@@ -9,8 +9,8 @@ public class Game {
   private List<Player> players = new LinkedList<Player>();
   private int days = 0;
   private int maxDays = 4;
-  private Map<String, Room> rooms = new XMLUtility().getRoomsFromXML();
-  private List<Scene> deck = new XMLUtility().getScenesFromXML();
+  private Map<String, Room> rooms = XMLUtility.parseRoomsFromXML();
+  private List<Scene> deck = XMLUtility.parseScenesFromXML();
 
   public Game(int playerCount) throws Exception {
     int startingCredits = 0;
