@@ -8,6 +8,7 @@ import javax.swing.JLayeredPane;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.Map;
 
 import controller.GameController;
@@ -43,21 +44,21 @@ public class Board extends JFrame {
     super("Deadwood");
     // Set the exit option for the JFrame
     setDefaultCloseOperation(EXIT_ON_CLOSE);
+    // Create image icon so dimensions can be calculated.
+    ImageIcon icon = new ImageIcon(imageFolder + "board.jpg");
+    // Set the size of the GUI
+    setPreferredSize(new Dimension(icon.getIconWidth() + 200, icon.getIconHeight()));
 
     // Create the JLayeredPane to hold the display, cards, dice and buttons
     bPane = getLayeredPane();
 
     // Create the deadwood board
     boardlabel = new JLabel();
-    ImageIcon icon = new ImageIcon(imageFolder + "board.jpg");
     boardlabel.setIcon(icon);
     boardlabel.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
 
     // Add the board to the lowest layer
     bPane.add(boardlabel, 0);
-
-    // Set the size of the GUI
-    setSize(icon.getIconWidth() + 200, icon.getIconHeight());
 
     // Add a scene card to this room
     cardlabel = new JLabel();
@@ -122,7 +123,7 @@ public class Board extends JFrame {
             for(Role curRole : ((SetRoom)room).getExtras()) {
                 JButton button2 = new JButton();
                 button2.setBounds(curRole.getX(), curRole.getY(), curRole.getW(), curRole.getH());
-                button2.setOpaque(false);
+                button2.setOpaque(true);
                 button2.setContentAreaFilled(false);
                 button2.setBorderPainted(false);
             }
