@@ -47,6 +47,7 @@ public class Board extends JFrame {
     // Create image icon so dimensions can be calculated.
     ImageIcon icon = new ImageIcon(imageFolder + "board.jpg");
     // Set the size of the GUI
+    setSize(new Dimension(icon.getIconWidth() + 200, icon.getIconHeight()));
     setPreferredSize(new Dimension(icon.getIconWidth() + 200, icon.getIconHeight()));
 
     // Create the JLayeredPane to hold the display, cards, dice and buttons
