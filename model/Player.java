@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Random;
 import java.lang.Exception;
 import java.util.List;
@@ -22,13 +24,6 @@ public class Player {
     {40, 25}
   };
 
-  public Player(Room startRoom) {
-    this.room = startRoom;
-  }
-  public Player(int startCredits, Room startRoom) {
-    this.credits = startCredits;
-    this.room = startRoom;
-  }
   public Player(int startCredits, int startRank, Room startRoom) {
     this.credits = startCredits;
     this.rank = startRank;

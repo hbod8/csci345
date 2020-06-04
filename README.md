@@ -4,8 +4,12 @@ Authors: Harry Saliba, Thomas Bidinger
 
 ## Compile:
 
-`javac Game.java`
+`javac Deadwood.java`
 
 ## Run :
 
-`java Game`
+`java Deadwood`
+
+## Clean:
+
+`find . -type f -name '*.o' -delete`

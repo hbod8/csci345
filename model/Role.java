@@ -1,3 +1,5 @@
+package model;
+
 public class Role {
   private Player player;
   private int requiredRank;
