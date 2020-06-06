@@ -128,9 +128,10 @@ public class Board extends JFrame {
     /* Create menu panel */
     this.menuPanel = new JPanel();
     this.menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
-    this.menuPanel.setBounds(0, 0, 100, 500);
+    // this.menuPanel.setMaximumSize(new Dimension(100, 500));
+    this.menuPanel.setBounds(0, 0, 200, 500);
     this.menuPanel.setVisible(true);
-    this.add(menuPanel);
+    layeredPane.add(menuPanel, 0);
     // Create the Menu for action buttons
     this.menuLabel = new JLabel("MENU");
     menuPanel.add(this.menuLabel);
@@ -186,9 +187,10 @@ public class Board extends JFrame {
     JLabel l = new JLabel("Select where to move.");
     moveRooms.setSelectedIndex(0);
     moveRooms.addMouseListener(new boardMouseListener());
+    moveRooms.setMaximumSize(new Dimension(100, 16));
     menuPanel.add(l);
     menuPanel.add(moveRooms);
-    
+    menuPanel.validate();
   }
 
   public void displayMessage(String s) {
