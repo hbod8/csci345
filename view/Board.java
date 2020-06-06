@@ -91,7 +91,7 @@ public class Board extends JFrame {
     // Create the deadwood board
     boardLabel = new JLabel();
     boardLabel.setIcon(icon);
-    boardLabel.setBounds(200, 0, icon.getIconWidth(), icon.getIconHeight());
+    boardLabel.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
 
     // Add the board to the lowest layer
     layeredPane.add(boardLabel, 0);
@@ -103,7 +103,7 @@ public class Board extends JFrame {
     this.menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
     this.menuPanel.setAlignmentY(Component.LEFT_ALIGNMENT);
     // this.menuPanel.setMaximumSize(new Dimension(100, 500));
-    this.menuPanel.setBounds(0, 0, 200, 500);
+    this.menuPanel.setBounds(icon.getIconWidth(), 0, 200, 500);
     this.menuPanel.setVisible(true);
     layeredPane.add(menuPanel, 0);
     // Create the Menu for action buttons
@@ -164,7 +164,8 @@ public class Board extends JFrame {
       // playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 40, 40);
       // System.out.println(imageFolder + "dice/" + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
       nextPlayerColor++;
-      layeredPane.add(playerLabel, 3);
+      layeredPane.add(playerLabel, 1);
+      // layeredPane.add(playerLabel, 0);
       this.players.put(p, playerLabel);
     }
     JLabel playerLabel = this.players.get(p);
@@ -173,6 +174,7 @@ public class Board extends JFrame {
     // System.out.printf("Player @(%d, %d) %d x %d\n", p.getRoom().getX(), p.getRoom().getY(), 40, 40);
     // System.out.println(playerLabel.isVisible());
     layeredPane.validate();
+    layeredPane.repaint();
   }
 
   /* @TODO paintScene(Scene) */
