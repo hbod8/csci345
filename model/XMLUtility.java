@@ -26,7 +26,7 @@ public class XMLUtility {
         if (element.getNodeType() == Node.ELEMENT_NODE && element.getNodeName().equals("set")) {
           Area area = parseArea(element);
           String roomname = element.getAttributes().getNamedItem("name").getNodeValue();
-          List<Area> takes = parseTakes(element);
+          Map<Integer, Area> takes = parseTakes(element);
           Room newRoom = new SetRoom(adjRooms, roomname, new LinkedList<Role>(), takes, area.getX(), area.getY(), area.getW(), area.getH());
           // Add set to list
           roomList.put(roomname, newRoom);
@@ -169,8 +169,8 @@ public class XMLUtility {
     return area;
   }
 
-  private static List<Area> parseTakes(Node element) {
-    List<Area> list = new LinkedList<Area>();
+  private static Map<Integer, Area> parseTakes(Node element) {
+    Map<Integer, Area> map = new HashMap<Integer, Area>();
     NodeList children = element.getChildNodes();
     for (int i = 0; i < children.getLength(); i++) {
       Node child = children.item(i);
@@ -183,15 +183,15 @@ public class XMLUtility {
           // If child is an image location then...
           if (child1.getNodeType() == Node.ELEMENT_NODE && child1.getNodeName().equals("take")) {
             // Get data from node
-            // int index = Integer.parseInt(child1.getAttributes().getNamedItem("number").getNodeValue());
+            int index = Integer.parseInt(child1.getAttributes().getNamedItem("number").getNodeValue());
             Area area = parseArea(child1);
-            list.add(area);
+            map.put(index, area);
           }
         }
       }
     }
     // Collections.reverse(list);
-    return list;
+    return map;
   }
 
   public static void main(String[] args) {
@@ -204,7 +204,7 @@ public class XMLUtility {
       }
       if (room instanceof SetRoom) {
         System.out.printf("\t\tShots:\n");
-        for (Area area : ((SetRoom) room).getShotList()) {
+        for (Area area : ((SetRoom) room).getShotMap().values()) {
           System.out.printf("\t\t\t@(%d, %d) %d x %d\n", area.getX(), area.getY(), area.getW(), area.getH());
         }
         System.out.printf("\t\tRoles:\n");

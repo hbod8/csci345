@@ -4,3 +4,6 @@
 - Shot tokens (Broekn)
 - Ending the game
 - Player scores / winner
+
+Call paint shots on act
+Can act when 1 shot left

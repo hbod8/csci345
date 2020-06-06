@@ -23,7 +23,6 @@ public class Role extends Area {
   }
   public boolean take(Player player) {
     if (player.getRank() < this.requiredRank) {
-      System.out.println("Sorry bud, you need a little more experience for that role.");
       return false;
     }
     this.player = player;

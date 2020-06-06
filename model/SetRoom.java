@@ -1,13 +1,14 @@
 package model;
 
 import java.util.List;
+import java.util.Map;
 
 public class SetRoom extends Room {
   private List<Role> extras;
   private Scene scene;
-  private List<Area> shots;
-  private int shot = 0;
-  public SetRoom(List<String> adjacentRooms, String name, List<Role> extras, List<Area> shots, int x, int y, int w, int h) {
+  private Map<Integer, Area> shots;
+  private int shot = 1;
+  public SetRoom(List<String> adjacentRooms, String name, List<Role> extras, Map<Integer, Area> shots, int x, int y, int w, int h) {
     super(adjacentRooms, name, x, y, w, h);
     this.extras = extras;
     this.shots = shots;
@@ -27,10 +28,10 @@ public class SetRoom extends Room {
   /**
    * @return the shots
    */
-  public int getShots() {
-    return shots.size() - shot;
+  public boolean hasShots() {
+    return (shot == shots.size() + 1);
   }
-  public List<Area> getShotList() {
+  public Map<Integer, Area> getShotMap() {
     return this.shots;
   }
   public Area getShotPosition() {
@@ -45,7 +46,11 @@ public class SetRoom extends Room {
   /**
    * @param shots the shots to set
    */
-  public void setShots(int shot) {
-    this.shot = shots.size() - 1;
+  public void resetShots() {
+    this.shot = 1;
+  }
+
+  public void shoot() {
+    this.shot++;
   }
 }

@@ -226,7 +226,7 @@ public class Board extends JFrame {
     }
     JLabel playerLabel = this.players.get(p);
     if (p.onRole()) {
-      if (p.getRoom() instanceof SetRoom && ((SetRoom)p.getRoom()).getScene().getRoles().contains(p.getRole())) {
+      if (p.getRoom() instanceof SetRoom && ((SetRoom)p.getRoom()).getScene() != null && ((SetRoom)p.getRoom()).getScene().getRoles().contains(p.getRole())) {
         playerLabel.setBounds(p.getRoom().getX() + p.getRole().getX(),p.getRoom().getY() + p.getRole().getY(), 46, 46);
       } else {
         playerLabel.setBounds(p.getRole().getX(), p.getRole().getY(), 46, 46);
@@ -247,6 +247,9 @@ public class Board extends JFrame {
   }
 
   public void paintScene(SetRoom r) {
+    if (r.getScene() == null) {
+      return;
+    }
     Scene s = r.getScene();
     if (!this.scenes.containsKey(r)) {
       /* Add scene */

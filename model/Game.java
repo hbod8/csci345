@@ -63,7 +63,7 @@ public class Game {
     for (Room room : rooms.values()) {
       if (room instanceof SetRoom) {
         ((SetRoom)room).setScene(deck.remove(0));
-        ((SetRoom)room).setShots(3);
+        ((SetRoom)room).resetShots();
       }
     }
   }

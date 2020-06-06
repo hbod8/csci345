@@ -48,7 +48,6 @@ public class GameController {
     } else {
       String desiredRoomName = board.selectionBox("Where do you want to move?", curPlayer.getRoom().getAdjRooms());
       curPlayer.hasMoved(curPlayer.move(desiredRoomName, game.getRoomMap().get(desiredRoomName)));
-      //System.out.println(desiredRoomName);
       if(curPlayer.getRoom() instanceof SetRoom) {
         ((SetRoom)curPlayer.getRoom()).getScene().setVisible(true);
         board.paintScene(((SetRoom)curPlayer.getRoom()));
@@ -89,12 +88,22 @@ public class GameController {
     } else if (curPlayer.hasActed()) {
       displayMessage("You already acted!");
     } else {
+      // check if you can act in rooms
+      if (!(curPlayer.getRoom() instanceof SetRoom)) {
+        displayMessage("Player is not in a room that they can act in.");
+        return;
+      }
+      if (((SetRoom)curPlayer.getRoom()).hasShots()) {
+        displayMessage("Whoops no more shots");
+        return;
+      }
       if (curPlayer.act()) {
         displayMessage("Success!");
+        board.paintScene(((SetRoom)curPlayer.getRoom()));
         endTurn();
       } else {
-        /* err */
-        displayMessage("Uh oh..");
+        /* Failed roll */
+        displayMessage("Try again next time!");
       }
     }
     /* make sure scene is visible and display it accordingly */
@@ -116,26 +125,6 @@ public class GameController {
   }
 
   public void upgrade() {
-    /* upgrade rank */
-    // displayMessage("What rank do you want?");
-    // int desiredLevel = in.nextInt();
-    // displayMessage("Do you want to use credits or dollars?");
-    // String paymentMethod;
-    // boolean selectedMethod = false;
-    // boolean success = false;
-    // while (!selectedMethod) {
-    //   paymentMethod = in.nextLine();
-    //   if (paymentMethod.equals("credits")) {
-    //     success = curPlayer.upgrade(desiredLevel, true);
-    //     selectedMethod = true;
-    //   } else if (paymentMethod.equals("dollars")) {
-    //     success = curPlayer.upgrade(desiredLevel, false);
-    //     selectedMethod = true;
-    //   } else {
-    //     displayMessage("Sorry we dont accept that payment method here... \"credits\" or \"dollars\"?");
-    //     paymentMethod = in.nextLine();
-    //   }
-    // }
     List<String> ranks = Arrays.asList(new String[]{"2", "3", "4", "5", "6"});
     List<String> payments = Arrays.asList(new String[]{"Credits", "Dollars"});
     int desiredLevel = Integer.parseInt(board.selectionBox("What rank do you want?", ranks));
@@ -146,7 +135,9 @@ public class GameController {
     } else if (paymentMethod.equals("dollars")) {
       success = curPlayer.upgrade(desiredLevel, false);
     }
-
+    if(!success) {
+      displayMessage("Could not upgrade.");
+    }
   }
 
   public void endTurn() {
