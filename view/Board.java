@@ -220,7 +220,7 @@ public class Board extends JFrame {
       }
     }
     menuPanel.add(endTurnButton);
-    menuPanel.add(testButton);
+    // menuPanel.add(testButton);
     menuPanel.validate();
   }
 

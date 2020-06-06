@@ -134,6 +134,7 @@ public class GameController {
     } else {
       /* Failed roll */
       displayMessage("Try again next time!");
+      curPlayer.hasActed(true);
       return;
     }
     /* make sure scene is visible and display it accordingly */
