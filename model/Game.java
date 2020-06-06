@@ -34,7 +34,7 @@ public class Game {
       throw new Exception("Failed to create game.");
     }
     for (int i = 0; i < playerCount; i++) {
-      this.players.add(new Player(startingCredits, startingRank, rooms.get("office")));
+      this.players.add(new Player(startingCredits, startingRank, rooms.get("trailer")));
     }
     this.finishSetup();
   }
