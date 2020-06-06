@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 
-public class Player extends Area {
+public class Player {
   private int credits = 0;
   private int dollars = 0;
   private int practiceChips = 0;
@@ -26,7 +26,6 @@ public class Player extends Area {
   };
 
   public Player(int startCredits, int startRank, Room startRoom) {
-    super(0, 0, 0, 0);
     this.credits = startCredits;
     this.rank = startRank;
     this.room = startRoom;
