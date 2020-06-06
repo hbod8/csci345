@@ -74,13 +74,8 @@ public class Player extends Area {
     return true;
   }
 
-  public boolean rehearse() {
-    if(((SetRoom)this.room).getScene().getBudget() == (practiceChips + 1)) {
-      System.out.println("Cannot rehearse anymore, must act.");
-      return false;
-    }
+  public void rehearse() {
     this.practiceChips++;
-    return true;
   }
 
   public boolean move(String roomname, Room newroom) {
@@ -89,7 +84,7 @@ public class Player extends Area {
       return false;
     } else {
       this.room = newroom;
-      /* @TODO update player area */
+      this.practiceChips = 0;
       return true;
     }
   }

@@ -1,0 +1,7 @@
+----Things we still need to do.----
+- Rehearse when not on a role (but in a room)
+- Rehearsing too much / not resetting when you move
+- Upgrade needs to be implemented
+- Shot tokens
+- Days / ending the game
+- Player scores / winner

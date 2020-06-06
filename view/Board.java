@@ -119,7 +119,7 @@ public class Board extends JFrame {
     this.menuPanel.setVisible(true);
     layeredPane.add(menuPanel, 0);
     // Create the Menu for action buttons
-    this.menuLabel = new JLabel("Menu");
+    this.menuLabel = new JLabel(" --Menu--");
 
     /* Initalize labels */
     this.dayLabel = new JLabel();
@@ -164,32 +164,32 @@ public class Board extends JFrame {
     /* Add title */
     menuPanel.add(menuLabel);
     /* Display player turn */
-    playerTurn.setText(p.getName() + "\'s turn.");
+    playerTurn.setText(" " + p.getName() + "\'s turn.");
     menuPanel.add(playerTurn);
     /* Display Day */
-    dayLabel.setText("Day: " + gameController.getDay());
+    dayLabel.setText(" Day: " + gameController.getDay());
     menuPanel.add(dayLabel);
     /* Display location */
-    locationLabel = new JLabel("Location: " + p.getRoom().getName());
-    locationLabel.setText("Location: " + p.getRoom().getName());
+    locationLabel = new JLabel(" Location: " + p.getRoom().getName());
+    locationLabel.setText(" Location: " + p.getRoom().getName());
     menuPanel.add(locationLabel);
     /* Display rank */
-    rankLabel.setText("Rank: " + p.getRank());
+    rankLabel.setText(" Rank: " + p.getRank());
     menuPanel.add(rankLabel);
     /* Display Role */
     if (p.onRole()) {
-      roleLabel.setText("Role: " + p.getRole().getName());
+      roleLabel.setText(" Role: " + p.getRole().getName());
       menuPanel.add(roleLabel);
     }
     /* Display Cash */
-    cashLabel.setText("Cash: " + p.getDollars());
+    cashLabel.setText(" Cash: " + p.getDollars());
     menuPanel.add(cashLabel);
     /* Display Credits */
-    creditsLabel.setText("Credits:" + p.getCredits());
+    creditsLabel.setText(" Credits:" + p.getCredits());
     menuPanel.add(creditsLabel);
     /* Display rehersals */
     if (p.getTokens() > 0) {
-      reherseLabel.setText("Rehersals:" + p.getTokens());
+      reherseLabel.setText(" Rehersals:" + p.getTokens());
       menuPanel.add(reherseLabel);
     }
     if (!p.hasMoved() && !p.hasActed()) {
@@ -215,13 +215,17 @@ public class Board extends JFrame {
       // playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 40, 40);
       // System.out.println(imageFolder + "dice/" + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
       nextPlayerColor++;
-      layeredPane.add(playerLabel, 1);
+      layeredPane.add(playerLabel, 2);
       // layeredPane.add(playerLabel, 0);
       this.players.put(p, playerLabel);
     }
     JLabel playerLabel = this.players.get(p);
     if (p.onRole()) {
-      playerLabel.setBounds(p.getRole().getX(), p.getRole().getY(), 46, 46);
+      if (p.getRoom() instanceof SetRoom && ((SetRoom)p.getRoom()).getScene().getRoles().contains(p.getRole())) {
+        playerLabel.setBounds(p.getRoom().getX() + p.getRole().getX(),p.getRoom().getY() + p.getRole().getY(), 46, 46);
+      } else {
+        playerLabel.setBounds(p.getRole().getX(), p.getRole().getY(), 46, 46);
+      }
     } else {
       playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 46, 46);
     }

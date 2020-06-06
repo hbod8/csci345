@@ -34,12 +34,10 @@ public class GameController {
     /* Create instance of View. */
     this.board = new Board(this);
     this.board.setVisible(true);
-    /* Display player */
-    System.out.println(this.curPlayer);
-    this.board.paintPlayer(this.curPlayer);
     this.board.paintActions(this.curPlayer);
     List<Room> roomList = new ArrayList<Room>(this.game.getRoomMap().values());
     this.board.paintAllScenes(roomList);
+    this.board.paintPlayer(this.curPlayer);
   }
 
   public void move() {
@@ -102,6 +100,14 @@ public class GameController {
   }
 
   public void reherse() {
+    if (!(curPlayer.getRoom() instanceof SetRoom)) {
+      displayMessage("You can only reherse in a set room!");
+      return;
+    }
+    if (((SetRoom)curPlayer.getRoom()).getScene().getBudget() == (curPlayer.getTokens() + 1)) {
+      displayMessage("Cannot rehearse anymore, must act.");
+      return;
+    }
     curPlayer.rehearse();
     endTurn();
   }
