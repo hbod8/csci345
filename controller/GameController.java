@@ -135,6 +135,7 @@ public class GameController {
       /* Failed roll */
       displayMessage("Try again next time!");
       curPlayer.hasActed(true);
+      board.paintScene(((SetRoom)curPlayer.getRoom()));
       return;
     }
     /* make sure scene is visible and display it accordingly */
