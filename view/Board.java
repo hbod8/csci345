@@ -2,168 +2,211 @@ package view;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.Map;
+
+import java.util.List;
 
 import controller.GameController;
 import model.Game;
+import model.Player;
 import model.Room;
 import model.Role;
 import model.SetRoom;
+import model.Scene;
 
 public class Board extends JFrame {
 
-  /* Controller instances */
+  /* Controller instance */
   GameController gameController;
 
-  // JLabels
-  JLabel boardlabel;
-  JLabel cardlabel;
-  JLabel playerlabel;
-  JLabel mLabel;
+  /* Components */
+  JLabel boardLabel;
 
-  // JButtons
-  JButton bAct;
-  JButton bRehearse;
-  JButton bMove;
+  /* Action menu and buttons */
+  JPanel menuPanel;
+  JLabel menuLabel;
+  JButton actButton;
+  JButton reherseButton;
+  JButton moveButton;
 
   // JLayered Pane
-  JLayeredPane bPane;
+  JLayeredPane layeredPane;
 
   /* Image folder location */
+  ImageIcon icon;
   private static final String imageFolder = "assets/images/";
 
-  public Board(Game game, GameController gameController) {
+  public Board(GameController gameController) {
     // Set the title of the JFrame
     super("Deadwood");
+    this.gameController = gameController;
+    /* Call setup function */
+    setup();
+    /* Call create labels function */
+    createLabels();
+    /* Create action menu */
+    createMenu();
+    // Add a scene card to this room
+    // cardlabel = new JLabel();
+    // ImageIcon cIcon = new ImageIcon("01.png");
+    // cardlabel.setIcon(cIcon);
+    // cardlabel.setBounds(20, 65, cIcon.getIconWidth() + 2, cIcon.getIconHeight());
+    // cardlabel.setOpaque(true);
+
+    // Add the card to the lower layer
+    // layeredPane.add(cardlabel, 1);
+
+    /* Creates components for every room */
+    // for (Room room : game.getRoomMap().values()) {
+    //     JComponent roomLabel = new JComponent();
+
+    //     //set bounds for button
+    //     roomComponent.setBounds(room.getX(), room.getY(), room.getW(), room.getH());
+        
+    //     //make button transparent
+    //     roomComponent.setOpaque(false);
+
+    //     //add the button
+    //     layeredPane.add(roomComponent);
+
+    //     //check if room is a setroom
+    //     if(room instanceof SetRoom) {
+    //         //loop through extras (off-card roles)
+    //         for(Role curRole : ((SetRoom)room).getExtras()) {
+    //             JButton button2 = new JButton();
+    //             button2.setBounds(curRole.getX(), curRole.getY(), curRole.getW(), curRole.getH());
+    //             button2.setOpaque(false);
+    //             button2.setContentAreaFilled(false);
+    //             button2.setBorderPainted(false);
+    //         }
+    //         //loop through roles (on-card roles)
+    //         for(Role curRole : ((SetRoom)room).getScene().getRoles()) {
+    //           JButton button3 = new JButton();
+    //           button3.setBounds(curRole.getX(), curRole.getY(), curRole.getW(), curRole.getH());
+    //           button3.setOpaque(false);
+    //           button3.setContentAreaFilled(false);
+    //           button3.setBorderPainted(false);
+    //         }
+    //     }
+    // }
+  }
+
+  private void setup() {
     // Set the exit option for the JFrame
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     // Create image icon so dimensions can be calculated.
-    ImageIcon icon = new ImageIcon(imageFolder + "board.jpg");
+    icon = new ImageIcon(imageFolder + "board.jpg");
     // Set the size of the GUI
     setSize(new Dimension(icon.getIconWidth() + 200, icon.getIconHeight()));
     setPreferredSize(new Dimension(icon.getIconWidth() + 200, icon.getIconHeight()));
-
     // Create the JLayeredPane to hold the display, cards, dice and buttons
-    bPane = getLayeredPane();
+    layeredPane = getLayeredPane();
+  }
 
+  private void createLabels() {
     // Create the deadwood board
-    boardlabel = new JLabel();
-    boardlabel.setIcon(icon);
-    boardlabel.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
+    boardLabel = new JLabel();
+    boardLabel.setIcon(icon);
+    boardLabel.setBounds(200, 0, icon.getIconWidth(), icon.getIconHeight());
 
     // Add the board to the lowest layer
-    bPane.add(boardlabel, 0);
+    layeredPane.add(boardLabel, 0);
+  }
 
-    // Add a scene card to this room
-    cardlabel = new JLabel();
-    ImageIcon cIcon = new ImageIcon("01.png");
-    cardlabel.setIcon(cIcon);
-    cardlabel.setBounds(20, 65, cIcon.getIconWidth() + 2, cIcon.getIconHeight());
-    cardlabel.setOpaque(true);
-
-    // Add the card to the lower layer
-    bPane.add(cardlabel, 1);
-
-    // Add a dice to represent a player.
-    // Role for Crusty the prospector. The x and y co-ordiantes are taken from
-    // Board.xml file
-    playerlabel = new JLabel();
-    ImageIcon pIcon = new ImageIcon("r2.png");
-    playerlabel.setIcon(pIcon);
-    // playerlabel.setBounds(114,227,pIcon.getIconWidth(),pIcon.getIconHeight());
-    playerlabel.setBounds(114, 227, 46, 46);
-    playerlabel.setVisible(false);
-    bPane.add(playerlabel, 3);
-
+  private void createMenu() {
+    /* Create menu panel */
+    this.menuPanel = new JPanel();
+    this.menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+    this.menuPanel.setBounds(0, 0, 100, 500);
+    this.menuPanel.setVisible(true);
+    this.add(menuPanel);
     // Create the Menu for action buttons
-    mLabel = new JLabel("MENU");
-    mLabel.setBounds(icon.getIconWidth() + 40, 0, 100, 20);
-    bPane.add(mLabel, 2);
+    this.menuLabel = new JLabel("MENU");
+    menuPanel.add(this.menuLabel);
 
-    // Create Action buttons
-    bAct = new JButton("ACT");
-    bAct.setBackground(Color.white);
-    bAct.setBounds(icon.getIconWidth() + 10, 30, 100, 20);
-    bAct.addMouseListener(new boardMouseListener());
+    /* Initalize buttons */
+    actButton = new JButton("Act");
+    actButton.setBackground(Color.white);
+    actButton.addMouseListener(new boardMouseListener());
 
-    bRehearse = new JButton("REHEARSE");
-    bRehearse.setBackground(Color.white);
-    bRehearse.setBounds(icon.getIconWidth() + 10, 60, 100, 20);
-    bRehearse.addMouseListener(new boardMouseListener());
+    reherseButton = new JButton("Reherse");
+    reherseButton.setBackground(Color.white);
+    reherseButton.addMouseListener(new boardMouseListener());
 
-    bMove = new JButton("MOVE");
-    bMove.setBackground(Color.white);
-    bMove.setBounds(icon.getIconWidth() + 10, 90, 100, 20);
-    bMove.addMouseListener(new boardMouseListener());
+    moveButton = new JButton("Move");
+    moveButton.setBackground(Color.white);
+    moveButton.addMouseListener(new boardMouseListener());
 
-    /* Creates buttons for every room */
-    for (Room room : game.getRoomMap().values()) {
-        JButton button1 = new JButton();
+    paintActions(false, false);
+  }
 
-        //set bounds for button
-        button1.setBounds(room.getX(), room.getY(), room.getW(), room.getH());
-        
-        //make button transparent
-        button1.setOpaque(false);
-        button1.setContentAreaFilled(false);
-        button1.setBorderPainted(false);
-
-        //add the button
-        bPane.add(button1);
-
-        //check if room is a setroom
-        if(room instanceof SetRoom) {
-            //loop through extras (off-card roles)
-            for(Role curRole : ((SetRoom)room).getExtras()) {
-                JButton button2 = new JButton();
-                button2.setBounds(curRole.getX(), curRole.getY(), curRole.getW(), curRole.getH());
-                button2.setOpaque(true);
-                button2.setContentAreaFilled(false);
-                button2.setBorderPainted(false);
-            }
-        }
+  /* paint actions */
+  public void paintActions(boolean hasMoved, boolean hasActed) {
+    if (hasMoved) {
+      menuPanel.remove(moveButton);
+    } else {
+      menuPanel.add(moveButton);
     }
-
-
-      /* Create JButton with room xyhw and display clear */
-      /* Add JButton to JLayeredFrame, IMPORTant: must be a layer below you add roles. */
-      /* Add JButton to JLayeredFrame */
-      /* Loop thorugh off-card roles */
-        /* Create JButton with icon */
-        /* Add JButton to JLayeredFrame */
-      /* Loop through on card roles */
-        /* Create JButton with icon */
-        /* Add JButton to JLayeredFrame */
-
-
-    // Place the action buttons in the top layer
-    bPane.add(bAct, 2);
-    bPane.add(bRehearse, 2);
-    bPane.add(bMove, 2);
+    if (hasActed) {
+      menuPanel.remove(actButton);
+      menuPanel.remove(reherseButton);
+    } else {
+      menuPanel.add(actButton);
+      menuPanel.add(reherseButton);
+    }
   }
 
   /* @TODO paintPlayer(Player) */
+  public void paintPlayer(Player p) {
+
+  }
 
   /* @TODO paintScene(Scene) */
+  public void paintScene(Scene s) {
+
+  }
+
+  /* Paint move options */
+  public void moveOptions(List<String> adjRooms) {
+    JComboBox<String> moveRooms = new JComboBox<String>();
+    for (String i : adjRooms) {
+      moveRooms.addItem(i);
+    }
+    JLabel l = new JLabel("Select where to move.");
+    moveRooms.setSelectedIndex(0);
+    moveRooms.addMouseListener(new boardMouseListener());
+    menuPanel.add(l);
+    menuPanel.add(moveRooms);
+    
+  }
+
+  public void displayMessage(String s) {
+    JOptionPane.showMessageDialog(this, 2, "Message", 0);
+  }
 
   class boardMouseListener implements MouseListener {
     // Code for the different button clicks
     public void mouseClicked(MouseEvent e) {
   
-      if (e.getSource() == bAct) {
-        playerlabel.setVisible(true);
+      if (e.getSource() == actButton) {
         System.out.println("Acting is Selected\n");
-      } else if (e.getSource() == bRehearse) {
+      } else if (e.getSource() == reherseButton) {
         System.out.println("Rehearse is Selected\n");
-      } else if (e.getSource() == bMove) {
+      } else if (e.getSource() == moveButton) {
         System.out.println("Move is Selected\n");
+        /* Tell controller the player wants to move */
+        gameController.move();
       }
     }
   

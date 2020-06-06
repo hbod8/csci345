@@ -2,17 +2,24 @@ package model;
 
 import java.util.List;
 import java.util.Map;
+
+import controller.GameController;
+
 import java.util.Collections;
 import java.util.LinkedList;
 
 public class Game {
+  /* Controller instance */
+  GameController gameController;
+
   private List<Player> players = new LinkedList<Player>();
-  private int days = 0;
+  private int day = 0;
   private int maxDays = 4;
   private Map<String, Room> rooms = XMLUtility.parseRoomsFromXML();
   private List<Scene> deck = XMLUtility.parseScenesFromXML();
 
-  public Game(int playerCount) throws Exception {
+  public Game(int playerCount, GameController gameController) throws Exception {
+    this.gameController = gameController;
     int startingCredits = 0;
     int startingRank = 0;
     if (playerCount > 1 && playerCount <= 2) {
@@ -61,6 +68,22 @@ public class Game {
   //returns room map
   public Map<String, Room> getRoomMap() {
     return this.rooms;
+  }
+
+  public List<Player> getPlayers() {
+    return this.players;
+  }
+
+  public int getDay() {
+    return this.day;
+  }
+
+  public int getMaxDays() {
+    return this.maxDays;
+  }
+
+  public void nextDay() {
+    this.day++;
   }
 
   // aquires and sets player names
