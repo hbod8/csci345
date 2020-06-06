@@ -69,6 +69,9 @@ public class Board extends JFrame {
   /* Scenes map Scene->component */
   private Map<SetRoom, JLabel> scenes;
 
+  /* Shot counters map SetRoom->component */
+  private Map<SetRoom, JLabel> shotTokens;
+
   private static final String imageFolder = "assets/images/";
   private final String[] playerIconColors = {"b", "c", "g", "o", "p", "r", "v", "w", "y"};
   private int nextPlayerColor = 0;
@@ -79,6 +82,7 @@ public class Board extends JFrame {
     this.gameController = gameController;
     this.players = new HashMap<Player, JLabel>();
     this.scenes = new HashMap<SetRoom, JLabel>();
+    this.shotTokens = new HashMap<SetRoom, JLabel>();
     /* Call setup function */
     setup();
     /* Call create labels function */
@@ -199,7 +203,8 @@ public class Board extends JFrame {
       menuPanel.add(takeRoleButton);
       menuPanel.add(actButton);
       menuPanel.add(reherseButton);
-      menuPanel.add(upgradeButton);
+      if(p.getRoom().getName().equals("office"))
+        menuPanel.add(upgradeButton);
     }
     menuPanel.add(endTurnButton);
     menuPanel.validate();
@@ -248,6 +253,11 @@ public class Board extends JFrame {
       JLabel sceneLabel = new JLabel();
       layeredPane.add(sceneLabel, 1);
       this.scenes.put(r, sceneLabel);
+      JLabel shotLabel = new JLabel();
+      ImageIcon shotImage = new ImageIcon(imageFolder + "shot.png");
+      shotLabel.setIcon(shotImage);
+      layeredPane.add(shotLabel, 2);
+      this.shotTokens.put(r, shotLabel);
     }
     JLabel sceneLabel = this.scenes.get(r);
     ImageIcon sceneIcon;
@@ -259,30 +269,44 @@ public class Board extends JFrame {
       sceneLabel.setIcon(sceneIcon);
     }
     sceneLabel.setBounds(r.getX(), r.getY(), 205, 115);
+    paintShotCounter(r);
     layeredPane.validate();
     layeredPane.repaint();
   }
 
-  /* Paint move options */
-  public String moveOptions(List<String> adjRooms) {
-    popframe = new JFrame();
-    popframe.setAlwaysOnTop(true);
-    Object selectionObject = JOptionPane.showInputDialog(popframe, "Where do you want to move?", "", JOptionPane.PLAIN_MESSAGE, null, adjRooms.toArray(), adjRooms.get(0));
-    String selectionString = selectionObject.toString();
-    return selectionString;
+  private void paintShotCounter(SetRoom r) {
+    JLabel shotCounterLabel = this.shotTokens.get(r);
+    shotCounterLabel.setBounds(r.getShotPosition().getX(), r.getShotPosition().getY(), r.getShotPosition().getW(), r.getShotPosition().getH());
   }
 
+  /* Paint move options */
+  // public String moveOptions(List<String> adjRooms) {
+  //   popframe = new JFrame();
+  //   popframe.setAlwaysOnTop(true);
+  //   Object selectionObject = JOptionPane.showInputDialog(popframe, "Where do you want to move?", "", JOptionPane.PLAIN_MESSAGE, null, adjRooms.toArray(), adjRooms.get(0));
+  //   String selectionString = selectionObject.toString();
+  //   return selectionString;
+  // }
+
   /* Paint take role options */
-  public String takeRoleOptions(List<String> roles) {
-    popframe = new JFrame();
-    popframe.setAlwaysOnTop(true);
-    Object selectionObject = JOptionPane.showInputDialog(popframe, "What role?", "", JOptionPane.PLAIN_MESSAGE, null, roles.toArray(), roles.get(0));
-    String selectionString = selectionObject.toString();
-    return selectionString;
-  } 
+  // public String takeRoleOptions(List<String> roles) {
+  //   popframe = new JFrame();
+  //   popframe.setAlwaysOnTop(true);
+  //   Object selectionObject = JOptionPane.showInputDialog(popframe, "What role?", "", JOptionPane.PLAIN_MESSAGE, null, roles.toArray(), roles.get(0));
+  //   String selectionString = selectionObject.toString();
+  //   return selectionString;
+  // } 
 
   public void displayMessage(String s) {
     JOptionPane.showMessageDialog(this, s, "Message", 0);
+  }
+
+  public String selectionBox(String prompt, List<String> selections) {
+    popframe = new JFrame();
+    popframe.setAlwaysOnTop(true);
+    Object selectionObject = JOptionPane.showInputDialog(popframe, prompt, "", JOptionPane.PLAIN_MESSAGE, null, selections.toArray(), selections.get(0));
+    String selectionString = selectionObject.toString();
+    return selectionString;
   }
 
   class boardMouseListener implements MouseListener {

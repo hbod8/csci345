@@ -2,6 +2,7 @@ package controller;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import model.Game;
 import model.Player;
@@ -45,7 +46,7 @@ public class GameController {
     if (curPlayer.hasMoved() || curPlayer.hasActed()) {
       displayMessage("You have alread moved this turn!");
     } else {
-      String desiredRoomName = board.moveOptions(curPlayer.getRoom().getAdjRooms());
+      String desiredRoomName = board.selectionBox("Where do you want to move?", curPlayer.getRoom().getAdjRooms());
       curPlayer.hasMoved(curPlayer.move(desiredRoomName, game.getRoomMap().get(desiredRoomName)));
       //System.out.println(desiredRoomName);
       if(curPlayer.getRoom() instanceof SetRoom) {
@@ -69,7 +70,7 @@ public class GameController {
       roleNames.add(curRole.getName());
     }
     /* Display options + get selected role*/
-    String selectedRoleName = board.takeRoleOptions(roleNames);
+    String selectedRoleName = board.selectionBox("What role?", roleNames);
     for (Role r : listOfRoles) {
       if(r.getName().equals(selectedRoleName)) {
         if(!(curPlayer.takeRole(r))) {
@@ -89,9 +90,11 @@ public class GameController {
       displayMessage("You already acted!");
     } else {
       if (curPlayer.act()) {
+        displayMessage("Success!");
         endTurn();
       } else {
         /* err */
+        displayMessage("Uh oh..");
       }
     }
     /* make sure scene is visible and display it accordingly */
@@ -133,7 +136,17 @@ public class GameController {
     //     paymentMethod = in.nextLine();
     //   }
     // }
-    endTurn();
+    List<String> ranks = Arrays.asList(new String[]{"2", "3", "4", "5", "6"});
+    List<String> payments = Arrays.asList(new String[]{"Credits", "Dollars"});
+    int desiredLevel = Integer.parseInt(board.selectionBox("What rank do you want?", ranks));
+    String paymentMethod = board.selectionBox("Credits or Dollars?", payments);
+    boolean success = false;
+    if(paymentMethod.equals("credits")) {
+      success = curPlayer.upgrade(desiredLevel, true);
+    } else if (paymentMethod.equals("dollars")) {
+      success = curPlayer.upgrade(desiredLevel, false);
+    }
+
   }
 
   public void endTurn() {

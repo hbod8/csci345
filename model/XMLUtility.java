@@ -1,6 +1,9 @@
 package model;
 
 import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -23,7 +26,8 @@ public class XMLUtility {
         if (element.getNodeType() == Node.ELEMENT_NODE && element.getNodeName().equals("set")) {
           Area area = parseArea(element);
           String roomname = element.getAttributes().getNamedItem("name").getNodeValue();
-          Room newRoom = new SetRoom(adjRooms, roomname, new LinkedList<Role>(), area.getX(), area.getY(), area.getW(), area.getH());
+          List<Area> takes = parseTakes(element);
+          Room newRoom = new SetRoom(adjRooms, roomname, new LinkedList<Role>(), takes, area.getX(), area.getY(), area.getW(), area.getH());
           // Add set to list
           roomList.put(roomname, newRoom);
           parseNeighbors(element, newRoom);
@@ -165,6 +169,31 @@ public class XMLUtility {
     return area;
   }
 
+  private static List<Area> parseTakes(Node element) {
+    List<Area> list = new LinkedList<Area>();
+    NodeList children = element.getChildNodes();
+    for (int i = 0; i < children.getLength(); i++) {
+      Node child = children.item(i);
+      if (child.getNodeType() == Node.ELEMENT_NODE && child.getNodeName().equals("takes")) {
+        // get neighbors
+        NodeList children1 = child.getChildNodes();
+        // Loop though child nodes
+        for (int j = 0; j < children1.getLength(); j++) {
+          Node child1 = children1.item(j);
+          // If child is an image location then...
+          if (child1.getNodeType() == Node.ELEMENT_NODE && child1.getNodeName().equals("take")) {
+            // Get data from node
+            // int index = Integer.parseInt(child1.getAttributes().getNamedItem("number").getNodeValue());
+            Area area = parseArea(child1);
+            list.add(area);
+          }
+        }
+      }
+    }
+    // Collections.reverse(list);
+    return list;
+  }
+
   public static void main(String[] args) {
     System.out.println("Test Rooms:");
     Map<String, Room> r = XMLUtility.parseRoomsFromXML();
@@ -174,6 +203,10 @@ public class XMLUtility {
         System.out.printf("\t\t\t%s\n", adj);
       }
       if (room instanceof SetRoom) {
+        System.out.printf("\t\tShots:\n");
+        for (Area area : ((SetRoom) room).getShotList()) {
+          System.out.printf("\t\t\t@(%d, %d) %d x %d\n", area.getX(), area.getY(), area.getW(), area.getH());
+        }
         System.out.printf("\t\tRoles:\n");
         for (Role role : ((SetRoom) room).getExtras()) {
           System.out.printf("\t\t\t%s (%d) @(%d, %d) %d x %d\n", role.getName(), role.getRank(), role.getX(), role.getY(), role.getW(), role.getH());
