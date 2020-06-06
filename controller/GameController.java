@@ -103,6 +103,7 @@ public class GameController {
       }
     }
     /* Update player information in view and location */
+    curPlayer.hasActed(true);
     board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
     endTurn();
