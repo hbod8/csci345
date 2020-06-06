@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Random;
+
 import java.util.List;
 import java.util.LinkedList;
 
@@ -41,7 +42,7 @@ public class Player {
     if(roll + practiceChips >= ((SetRoom)this.room).getScene().getBudget()) {
       //decrement shot counter
       ((SetRoom)this.room).shoot();
-      if (!((SetRoom)this.room).hasShots()) {
+      if (((SetRoom)this.room).getShots() < 1) {
         ((SetRoom)this.room).setScene(null);
       }
       
@@ -66,18 +67,23 @@ public class Player {
     this.practiceChips++;
   }
 
-  public boolean move(String roomname, Room newroom) {
-    if (!this.room.isAdjacent(roomname)) {
-      return false;
-    } else {
-      this.room = newroom;
-      this.practiceChips = 0;
-      return true;
-    }
+  public void move(Room newroom) {
+    this.room = newroom;
+    this.practiceChips = 0;
   }
 
-  public boolean takeRole(Role role) {
-    return role.take(this);
+  public void takeRole(Role role) {
+    role.take(this);
+  }
+
+  public void freeRole() {
+    if (this.room instanceof SetRoom) {
+      for (Role r : this.getRoles()) {
+        if (r.getPlayer().equals(this)) {
+          r.free();
+        }
+      }
+    }
   }
 
   public boolean upgrade(int level, boolean credits) {
@@ -139,7 +145,8 @@ public class Player {
     }
     return null;
   }
-
+ 
+  /* returns list of roles in the rooms that a player is in */
   public List<Role> getRoles() {
     List<Role> roles = new LinkedList<Role>();
     if(this.room instanceof SetRoom) {

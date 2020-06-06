@@ -8,10 +8,12 @@ public class SetRoom extends Room {
   private Scene scene;
   private Map<Integer, Area> shots;
   private int shot = 1;
+  private int shotsLeft;
   public SetRoom(List<String> adjacentRooms, String name, List<Role> extras, Map<Integer, Area> shots, int x, int y, int w, int h) {
     super(adjacentRooms, name, x, y, w, h);
     this.extras = extras;
     this.shots = shots;
+    this.shotsLeft = shots.size();
   }
   /**
    * @return the extras
@@ -28,9 +30,9 @@ public class SetRoom extends Room {
   /**
    * @return the shots
    */
-  public boolean hasShots() {
-    return (shot == shots.size() + 1);
-  }
+  // public boolean hasShots() {
+  //   return (shotsLeft > 0);
+  // }
   public Map<Integer, Area> getShotMap() {
     return this.shots;
   }
@@ -48,9 +50,15 @@ public class SetRoom extends Room {
    */
   public void resetShots() {
     this.shot = 1;
+    this.shotsLeft = shots.size();
   }
 
   public void shoot() {
     this.shot++;
+    this.shotsLeft--;
+  }
+
+  public int getShots() {
+    return this.shotsLeft;
   }
 }

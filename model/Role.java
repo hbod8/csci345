@@ -21,12 +21,8 @@ public class Role extends Area {
   public boolean isTaken() {
     return (this.player != null);
   }
-  public boolean take(Player player) {
-    if (player.getRank() < this.requiredRank) {
-      return false;
-    }
+  public void take(Player player) {
     this.player = player;
-    return true;
   }
 
   /**

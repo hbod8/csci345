@@ -196,15 +196,17 @@ public class Board extends JFrame {
       reherseLabel.setText(" Rehersals:" + p.getTokens());
       menuPanel.add(reherseLabel);
     }
+    /* Display action buttons */
     if (!p.hasMoved() && !p.hasActed()) {
       menuPanel.add(moveButton);
+      menuPanel.add(reherseButton);
+      menuPanel.add(actButton);
     }
     if (!p.hasActed()) {
       menuPanel.add(takeRoleButton);
-      menuPanel.add(actButton);
-      menuPanel.add(reherseButton);
-      if(p.getRoom().getName().equals("office"))
+      if(p.getRoom().getName().equals("office")) {
         menuPanel.add(upgradeButton);
+      }
     }
     menuPanel.add(endTurnButton);
     menuPanel.validate();

@@ -35,76 +35,99 @@ public class GameController {
     /* Create instance of View. */
     this.board = new Board(this);
     this.board.setVisible(true);
+    /* Paint actions */
     this.board.paintActions(this.curPlayer);
+    /* Paint all rooms and scenes */
     List<Room> roomList = new ArrayList<Room>(this.game.getRoomMap().values());
     this.board.paintAllScenes(roomList);
+    /* Paint the current player */
     this.board.paintPlayer(this.curPlayer);
   }
 
   public void move() {
     /* move player */
     if (curPlayer.hasMoved() || curPlayer.hasActed()) {
-      displayMessage("You have alread moved this turn!");
+      displayMessage("You have alread moved or acted this turn!");
     } else {
+      /* Make sure the player dosent have a role */
+      curPlayer.freeRole();
+      /* Display list of adjacent rooms */
       String desiredRoomName = board.selectionBox("Where do you want to move?", curPlayer.getRoom().getAdjRooms());
-      curPlayer.hasMoved(curPlayer.move(desiredRoomName, game.getRoomMap().get(desiredRoomName)));
-      if(curPlayer.getRoom() instanceof SetRoom) {
+      /* Move and update has moved */
+      curPlayer.move(game.getRoomMap().get(desiredRoomName));
+      curPlayer.hasMoved(true);
+      if(curPlayer.getRoom() instanceof SetRoom && ((SetRoom)curPlayer.getRoom()).getScene() != null) {
+        /* Make sure scene is visible  */
         ((SetRoom)curPlayer.getRoom()).getScene().setVisible(true);
         board.paintScene(((SetRoom)curPlayer.getRoom()));
       }
     }
-    /* make sure scene is visible and display it accordingly */
+    /* Update actions and player location */
     board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
   }
 
   public void takeRole() {
+    /* Make sure they are in a set room */
     if (!(curPlayer.getRoom() instanceof SetRoom)) {
-      displayMessage("Whoops you cannot take a role in the trailer or office!");
+      displayMessage("Whoops, you cannot take a role in the trailer or office!");
+      return;
     }
-    /* get list of roles + list of role names*/
-    List<Role> listOfRoles = curPlayer.getRoles();
+    /* Make sure there is still a movie being filmed */
+    if (((SetRoom)curPlayer.getRoom()).getScene() == null) {
+      displayMessage("Whoops, looks like the scene has ended filming for the day.");
+      return;
+    }
+    /* Get list of roles and convert too list of role names */
     List<String> roleNames = new ArrayList<String>();
-    for (Role curRole : listOfRoles) {
+    for (Role curRole : curPlayer.getRoles()) {
       roleNames.add(curRole.getName());
     }
-    /* Display options + get selected role*/
+    /* Display possible roles and get selected role */
     String selectedRoleName = board.selectionBox("What role?", roleNames);
-    for (Role r : listOfRoles) {
+    for (Role r : curPlayer.getRoles()) {
       if(r.getName().equals(selectedRoleName)) {
-        if(!(curPlayer.takeRole(r))) {
+        if(curPlayer.getRank() < r.getRank()) {
           displayMessage("Sorry bud, you need a little more experience for that role.");
+        } else {
+          curPlayer.takeRole(r);
+          endTurn();
         }
       }
     }
-    /* make sure scene is visible and display it accordingly */
+    /* Update player information in view and location */
     board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
   }
 
   public void act() {
+    /* Make sure they qualify for acting that turn */
     if (curPlayer.hasMoved()) {
       displayMessage("You already moved!");
-    } else if (curPlayer.hasActed()) {
+      return;
+    }
+    if (curPlayer.hasActed()) {
       displayMessage("You already acted!");
+      return;
+    }
+    /* Make sure player is in set room */
+    if (!(curPlayer.getRoom() instanceof SetRoom)) {
+      displayMessage("Player is not in a set room.");
+      return;
+    }
+    /* Make sure there is still a shoot happening. */
+    if (((SetRoom)curPlayer.getRoom()).getScene() == null) {
+      displayMessage("Whoops looks like the set is closed for the day.");
+      return;
+    }
+    if (curPlayer.act()) {
+      displayMessage("Success!");
+      curPlayer.hasActed(true);
+      board.paintScene(((SetRoom)curPlayer.getRoom()));
     } else {
-      // check if you can act in rooms
-      if (!(curPlayer.getRoom() instanceof SetRoom)) {
-        displayMessage("Player is not in a room that they can act in.");
-        return;
-      }
-      if (((SetRoom)curPlayer.getRoom()).hasShots()) {
-        displayMessage("Whoops no more shots");
-        return;
-      }
-      if (curPlayer.act()) {
-        displayMessage("Success!");
-        board.paintScene(((SetRoom)curPlayer.getRoom()));
-        endTurn();
-      } else {
-        /* Failed roll */
-        displayMessage("Try again next time!");
-      }
+      /* Failed roll */
+      displayMessage("Try again next time!");
+      return;
     }
     /* make sure scene is visible and display it accordingly */
     board.paintActions(curPlayer);
@@ -112,32 +135,56 @@ public class GameController {
   }
 
   public void reherse() {
+    /* Check if player is in a room with roles*/
     if (!(curPlayer.getRoom() instanceof SetRoom)) {
       displayMessage("You can only reherse in a set room!");
       return;
     }
+    /* Make sure there is still a shoot happening. */
+    if (((SetRoom)curPlayer.getRoom()).getScene() == null) {
+      displayMessage("Whoops looks like the set is closed for the day.");
+      return;
+    }
+    
+    /* Check if player is on a role */
+    if (!curPlayer.onRole()){
+      displayMessage("You are not on a role!");
+      return;
+    }
+    
+    /* Check if player has max rehearsal tokens */
     if (((SetRoom)curPlayer.getRoom()).getScene().getBudget() == (curPlayer.getTokens() + 1)) {
       displayMessage("Cannot rehearse anymore, must act.");
       return;
     }
+    
+    /* Finally, reherse */
     curPlayer.rehearse();
     endTurn();
   }
 
   public void upgrade() {
+    /* Display upgrade options */
     List<String> ranks = Arrays.asList(new String[]{"2", "3", "4", "5", "6"});
-    List<String> payments = Arrays.asList(new String[]{"Credits", "Dollars"});
+    /* Get selected option */
     int desiredLevel = Integer.parseInt(board.selectionBox("What rank do you want?", ranks));
+    /* Display payment options.  Did you just assume my tender? */
+    List<String> payments = Arrays.asList(new String[]{"Credits", "Dollars"});
+    /* Get selected option */
     String paymentMethod = board.selectionBox("Credits or Dollars?", payments);
+    /* Attempt upgrade */
     boolean success = false;
-    if(paymentMethod.equals("credits")) {
+    if (paymentMethod.equals("Credits")) {
       success = curPlayer.upgrade(desiredLevel, true);
-    } else if (paymentMethod.equals("dollars")) {
+    } else if (paymentMethod.equals("Dollars")) {
       success = curPlayer.upgrade(desiredLevel, false);
     }
     if(!success) {
       displayMessage("Could not upgrade.");
+      return;
     }
+    /* Update player info in view */
+    board.paintActions(curPlayer);
   }
 
   public void endTurn() {
