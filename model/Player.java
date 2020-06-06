@@ -10,6 +10,8 @@ public class Player extends Area {
   private int dollars = 0;
   private int practiceChips = 0;
   private int rank = 1;
+  private boolean hasMoved = false;
+  private boolean hasActed = false;
   private Room room;
   public boolean inScene;
   private String name;
@@ -239,6 +241,24 @@ public class Player extends Area {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean hasMoved() {
+    return hasMoved;
+  }
+
+  public boolean hasActed() {
+    return hasActed;
+  }
+
+  public boolean hasMoved(boolean b) {
+    this.hasMoved = b;
+    return b;
+  }
+
+  public boolean hasActed(boolean b) {
+    this.hasActed = b;
+    return b;
   }
 
 }

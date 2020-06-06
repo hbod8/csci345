@@ -13,12 +13,12 @@ public class Game {
   GameController gameController;
 
   private List<Player> players = new LinkedList<Player>();
-  private int day = 0;
+  private int day = 1;
   private int maxDays = 4;
   private Map<String, Room> rooms = XMLUtility.parseRoomsFromXML();
   private List<Scene> deck = XMLUtility.parseScenesFromXML();
 
-  public Game(int playerCount, GameController gameController) throws Exception {
+  public Game(int playerCount, List<String> playerNames, GameController gameController) throws Exception {
     this.gameController = gameController;
     int startingCredits = 0;
     int startingRank = 1;
@@ -35,6 +35,9 @@ public class Game {
     }
     for (int i = 0; i < playerCount; i++) {
       this.players.add(new Player(startingCredits, startingRank, rooms.get("trailer")));
+    }
+    for (int i = 0; i < playerCount; i++) {
+      this.players.get(i).setName(playerNames.get(i));
     }
     this.finishSetup();
   }

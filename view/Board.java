@@ -39,6 +39,14 @@ public class Board extends JFrame {
   /* Action menu and buttons */
   private JPanel menuPanel;
   private JLabel menuLabel;
+  private JLabel dayLabel;
+  private JLabel locationLabel;
+  private JLabel rankLabel;
+  private JLabel roleLabel;
+  private JLabel cashLabel;
+  private JLabel creditsLabel;
+  private JLabel reherseLabel;
+  private JLabel playerTurn;
   private JButton moveButton;
   private JButton takeRoleButton;
   private JButton actButton;
@@ -55,8 +63,11 @@ public class Board extends JFrame {
   /* Image folder location */
   private ImageIcon icon;
 
-  /* Player map name->component */
+  /* Player map Player->component */
   private Map<Player, JLabel> players;
+
+  /* Scenes map Scene->component */
+  private Map<SetRoom, JLabel> scenes;
 
   private static final String imageFolder = "assets/images/";
   private final String[] playerIconColors = {"b", "c", "g", "o", "p", "r", "v", "w", "y"};
@@ -67,6 +78,7 @@ public class Board extends JFrame {
     super("Deadwood");
     this.gameController = gameController;
     this.players = new HashMap<Player, JLabel>();
+    this.scenes = new HashMap<SetRoom, JLabel>();
     /* Call setup function */
     setup();
     /* Call create labels function */
@@ -108,7 +120,16 @@ public class Board extends JFrame {
     layeredPane.add(menuPanel, 0);
     // Create the Menu for action buttons
     this.menuLabel = new JLabel("Menu");
-    menuPanel.add(this.menuLabel);
+
+    /* Initalize labels */
+    this.dayLabel = new JLabel();
+    this.locationLabel = new JLabel();
+    this.rankLabel = new JLabel();
+    this.roleLabel = new JLabel();
+    this.cashLabel = new JLabel();
+    this.creditsLabel = new JLabel();
+    this.reherseLabel = new JLabel();
+    this.playerTurn = new JLabel();
 
     /* Initalize buttons */
     moveButton = new JButton("Move");
@@ -134,17 +155,47 @@ public class Board extends JFrame {
     endTurnButton = new JButton("End Turn");
     endTurnButton.setBackground(Color.white);
     endTurnButton.addMouseListener(new boardMouseListener());
-
-    paintActions(false, false);
   }
 
   /* paint actions */
-  public void paintActions(boolean hasMoved, boolean hasActed) {
+  public void paintActions(Player p) {
+    /* Clear menu */
     menuPanel.removeAll();
-    if (!hasMoved && !hasActed) {
+    /* Add title */
+    menuPanel.add(menuLabel);
+    /* Display player turn */
+    playerTurn.setText(p.getName() + "\'s turn.");
+    menuPanel.add(playerTurn);
+    /* Display Day */
+    dayLabel.setText("Day: " + gameController.getDay());
+    menuPanel.add(dayLabel);
+    /* Display location */
+    locationLabel = new JLabel("Location: " + p.getRoom().getName());
+    locationLabel.setText("Location: " + p.getRoom().getName());
+    menuPanel.add(locationLabel);
+    /* Display rank */
+    rankLabel.setText("Rank: " + p.getRank());
+    menuPanel.add(rankLabel);
+    /* Display Role */
+    if (p.onRole()) {
+      roleLabel.setText("Role: " + p.getRole().getName());
+      menuPanel.add(roleLabel);
+    }
+    /* Display Cash */
+    cashLabel.setText("Cash: " + p.getDollars());
+    menuPanel.add(cashLabel);
+    /* Display Credits */
+    creditsLabel.setText("Credits:" + p.getCredits());
+    menuPanel.add(creditsLabel);
+    /* Display rehersals */
+    if (p.getTokens() > 0) {
+      reherseLabel.setText("Rehersals:" + p.getTokens());
+      menuPanel.add(reherseLabel);
+    }
+    if (!p.hasMoved() && !p.hasActed()) {
       menuPanel.add(moveButton);
     }
-    if (!hasActed) {
+    if (!p.hasActed()) {
       menuPanel.add(takeRoleButton);
       menuPanel.add(actButton);
       menuPanel.add(reherseButton);
@@ -169,17 +220,43 @@ public class Board extends JFrame {
       this.players.put(p, playerLabel);
     }
     JLabel playerLabel = this.players.get(p);
-    // System.out.println(playerLabel.getBounds());
-    playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 40, 40);
-    // System.out.printf("Player @(%d, %d) %d x %d\n", p.getRoom().getX(), p.getRoom().getY(), 40, 40);
-    // System.out.println(playerLabel.isVisible());
+    if (p.onRole()) {
+      playerLabel.setBounds(p.getRole().getX(), p.getRole().getY(), 46, 46);
+    } else {
+      playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 46, 46);
+    }
     layeredPane.validate();
     layeredPane.repaint();
   }
 
-  /* @TODO paintScene(Scene) */
-  public void paintScene(Scene s) {
+  public void paintAllScenes(List<Room> rooms) {
+    for (Room r : rooms) {
+      if (r instanceof SetRoom) {
+        paintScene((SetRoom)r);
+      }
+    }
+  }
 
+  public void paintScene(SetRoom r) {
+    Scene s = r.getScene();
+    if (!this.scenes.containsKey(r)) {
+      /* Add scene */
+      JLabel sceneLabel = new JLabel();
+      layeredPane.add(sceneLabel, 1);
+      this.scenes.put(r, sceneLabel);
+    }
+    JLabel sceneLabel = this.scenes.get(r);
+    ImageIcon sceneIcon;
+    if (!s.visible) {
+      sceneIcon = new ImageIcon(imageFolder + "CardBack-small.jpg");
+      sceneLabel.setIcon(sceneIcon);
+    } else {
+      sceneIcon = new ImageIcon(imageFolder + "cards/" + s.getImageName());
+      sceneLabel.setIcon(sceneIcon);
+    }
+    sceneLabel.setBounds(r.getX(), r.getY(), 205, 115);
+    layeredPane.validate();
+    layeredPane.repaint();
   }
 
   /* Paint move options */

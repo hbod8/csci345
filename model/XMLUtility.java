@@ -183,7 +183,7 @@ public class XMLUtility {
     System.out.println("Test Scenes:");
     List<Scene> s = XMLUtility.parseScenesFromXML();
     for (Scene scene : s) {
-      System.out.printf("\t%s (%d):\n", scene.getName(), scene.getBudget());
+      System.out.printf("\t%s (%d) %s:\n", scene.getName(), scene.getBudget(), scene.getImageName());
       for (Role role : scene.getRoles()) {
         System.out.printf("\t\t%s (%d) @(%d, %d) %d x %d\n", role.getName(), role.getRank(), role.getX(), role.getY(), role.getW(), role.getH());
       }

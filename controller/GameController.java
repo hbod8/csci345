@@ -7,6 +7,7 @@ import model.Game;
 import model.Player;
 import model.Role;
 import model.SetRoom;
+import model.Room;
 import view.Board;
 
 public class GameController {
@@ -20,17 +21,11 @@ public class GameController {
   /* current player */
   private Player curPlayer;
 
-  /* Has current player moved? */
-  private boolean hasMoved;
-
-  /* Has current player acted? */
-  private boolean hasActed;
-
-  public GameController(int players) {
+  public GameController(int players, List<String> playerNames) {
     this.game = null;
     /* Create instance of Model. */
     try {
-      game = new Game(players, this);
+      this.game = new Game(players, playerNames, this);
       this.curPlayer = this.game.getPlayers().get(0);
     } catch (Exception e) {
       e.printStackTrace();
@@ -40,20 +35,28 @@ public class GameController {
     this.board = new Board(this);
     this.board.setVisible(true);
     /* Display player */
-    this.board.paintPlayer(curPlayer);
+    System.out.println(this.curPlayer);
+    this.board.paintPlayer(this.curPlayer);
+    this.board.paintActions(this.curPlayer);
+    List<Room> roomList = new ArrayList<Room>(this.game.getRoomMap().values());
+    this.board.paintAllScenes(roomList);
   }
 
   public void move() {
     /* move player */
-    if (hasMoved || hasActed) {
+    if (curPlayer.hasMoved() || curPlayer.hasActed()) {
       displayMessage("You have alread moved this turn!");
     } else {
       String desiredRoomName = board.moveOptions(curPlayer.getRoom().getAdjRooms());
-      hasMoved = curPlayer.move(desiredRoomName, game.getRoomMap().get(desiredRoomName));
-      System.out.println(desiredRoomName);
+      curPlayer.hasMoved(curPlayer.move(desiredRoomName, game.getRoomMap().get(desiredRoomName)));
+      //System.out.println(desiredRoomName);
+      if(curPlayer.getRoom() instanceof SetRoom) {
+        ((SetRoom)curPlayer.getRoom()).getScene().setVisible(true);
+        board.paintScene(((SetRoom)curPlayer.getRoom()));
+      }
     }
     /* make sure scene is visible and display it accordingly */
-    board.paintActions(hasMoved, hasActed);
+    board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
   }
 
@@ -71,18 +74,20 @@ public class GameController {
     String selectedRoleName = board.takeRoleOptions(roleNames);
     for (Role r : listOfRoles) {
       if(r.getName().equals(selectedRoleName)) {
-        curPlayer.takeRole(r);
+        if(!(curPlayer.takeRole(r))) {
+          displayMessage("Sorry bud, you need a little more experience for that role.");
+        }
       }
     }
     /* make sure scene is visible and display it accordingly */
-    board.paintActions(hasMoved, hasActed);
+    board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
   }
 
   public void act() {
-    if (hasMoved) {
+    if (curPlayer.hasMoved()) {
       displayMessage("You already moved!");
-    } else if (hasActed) {
+    } else if (curPlayer.hasActed()) {
       displayMessage("You already acted!");
     } else {
       if (curPlayer.act()) {
@@ -92,7 +97,7 @@ public class GameController {
       }
     }
     /* make sure scene is visible and display it accordingly */
-    board.paintActions(hasMoved, hasActed);
+    board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
   }
 
@@ -126,8 +131,8 @@ public class GameController {
   }
 
   public void endTurn() {
-    this.hasActed = false;
-    this.hasMoved = false;
+    this.curPlayer.hasActed(false);
+    this.curPlayer.hasMoved(false);
     /* Check if game is over. */
     checkGameEnd();
     /* Update current player */
@@ -137,12 +142,14 @@ public class GameController {
       curPlayer = this.game.getPlayers().get(0);
     }
     /* Update actions */
-    board.paintActions(hasMoved, hasActed);
+    board.paintActions(curPlayer);
+    /* Display player */
+    this.board.paintPlayer(curPlayer);
   }
 
   private void checkGameEnd() {
     /* Check if game is over. */
-    if (this.game.getDay() <= this.game.getMaxDays()) {
+    if (this.game.getDay() < this.game.getMaxDays()) {
       // endGame()
     } else {
       this.game.nextDay();
@@ -151,5 +158,9 @@ public class GameController {
 
   private void displayMessage(String message) {
     board.displayMessage(message);
+  }
+
+  public int getDay() {
+    return game.getDay();
   }
 }
