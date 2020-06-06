@@ -18,6 +18,7 @@ import java.awt.Dimension;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import controller.GameController;
 import model.Game;
@@ -38,9 +39,12 @@ public class Board extends JFrame {
   /* Action menu and buttons */
   private JPanel menuPanel;
   private JLabel menuLabel;
+  private JButton moveButton;
+  private JButton takeRoleButton;
   private JButton actButton;
   private JButton reherseButton;
-  private JButton moveButton;
+  private JButton upgradeButton;
+  private JButton endTurnButton;
 
   // JLayered Pane
   private JLayeredPane layeredPane;
@@ -62,6 +66,7 @@ public class Board extends JFrame {
     // Set the title of the JFrame
     super("Deadwood");
     this.gameController = gameController;
+    this.players = new HashMap<Player, JLabel>();
     /* Call setup function */
     setup();
     /* Call create labels function */
@@ -102,10 +107,18 @@ public class Board extends JFrame {
     this.menuPanel.setVisible(true);
     layeredPane.add(menuPanel, 0);
     // Create the Menu for action buttons
-    this.menuLabel = new JLabel("MENU");
+    this.menuLabel = new JLabel("Menu");
     menuPanel.add(this.menuLabel);
 
     /* Initalize buttons */
+    moveButton = new JButton("Move");
+    moveButton.setBackground(Color.white);
+    moveButton.addMouseListener(new boardMouseListener());
+
+    takeRoleButton = new JButton("Take Role");
+    takeRoleButton.setBackground(Color.white);
+    takeRoleButton.addMouseListener(new boardMouseListener());
+
     actButton = new JButton("Act");
     actButton.setBackground(Color.white);
     actButton.addMouseListener(new boardMouseListener());
@@ -114,27 +127,30 @@ public class Board extends JFrame {
     reherseButton.setBackground(Color.white);
     reherseButton.addMouseListener(new boardMouseListener());
 
-    moveButton = new JButton("Move");
-    moveButton.setBackground(Color.white);
-    moveButton.addMouseListener(new boardMouseListener());
+    upgradeButton = new JButton("Upgrade");
+    upgradeButton.setBackground(Color.white);
+    upgradeButton.addMouseListener(new boardMouseListener());
+
+    endTurnButton = new JButton("End Turn");
+    endTurnButton.setBackground(Color.white);
+    endTurnButton.addMouseListener(new boardMouseListener());
 
     paintActions(false, false);
   }
 
   /* paint actions */
   public void paintActions(boolean hasMoved, boolean hasActed) {
-    if (hasMoved) {
-      menuPanel.remove(moveButton);
-    } else {
+    menuPanel.removeAll();
+    if (!hasMoved && !hasActed) {
       menuPanel.add(moveButton);
     }
-    if (hasActed) {
-      menuPanel.remove(actButton);
-      menuPanel.remove(reherseButton);
-    } else {
+    if (!hasActed) {
+      menuPanel.add(takeRoleButton);
       menuPanel.add(actButton);
       menuPanel.add(reherseButton);
+      menuPanel.add(upgradeButton);
     }
+    menuPanel.add(endTurnButton);
     menuPanel.validate();
   }
 
@@ -143,10 +159,20 @@ public class Board extends JFrame {
     if (!this.players.containsKey(p)) {
       /* Add player */
       JLabel playerLabel = new JLabel();
-      this.players.put(p, playerLabel);
-      ImageIcon img = new ImageIcon(imageFolder + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
+      ImageIcon img = new ImageIcon(imageFolder + "dice/" + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
       playerLabel.setIcon(img);
+      // playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 40, 40);
+      // System.out.println(imageFolder + "dice/" + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
+      nextPlayerColor++;
+      layeredPane.add(playerLabel, 3);
+      this.players.put(p, playerLabel);
     }
+    JLabel playerLabel = this.players.get(p);
+    // System.out.println(playerLabel.getBounds());
+    playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 40, 40);
+    // System.out.printf("Player @(%d, %d) %d x %d\n", p.getRoom().getX(), p.getRoom().getY(), 40, 40);
+    // System.out.println(playerLabel.isVisible());
+    layeredPane.validate();
   }
 
   /* @TODO paintScene(Scene) */
@@ -155,25 +181,22 @@ public class Board extends JFrame {
   }
 
   /* Paint move options */
-  public void moveOptions(List<String> adjRooms) {
-    // JComboBox<String> moveRooms = new JComboBox<String>();
-    // for (String i : adjRooms) {
-    //   moveRooms.addItem(i);
-    // }
-    // JLabel l = new JLabel("Select where to move.");
-    // moveRooms.setSelectedIndex(0);
-    // moveRooms.addMouseListener(new boardMouseListener());
-    // moveRooms.setMaximumSize(new Dimension(100, 16));
-    // moveRooms.setAlignmentY(Component.LEFT_ALIGNMENT);
-    // menuPanel.add(l);
-    // menuPanel.add(moveRooms);
-    // menuPanel.validate();
+  public String moveOptions(List<String> adjRooms) {
     popframe = new JFrame();
     popframe.setAlwaysOnTop(true);
-    Object selectionObject = JOptionPane.showInputDialog(popframe, "Choose", "Menu", JOptionPane.PLAIN_MESSAGE, null, adjRooms.toArray(), adjRooms.get(0));
+    Object selectionObject = JOptionPane.showInputDialog(popframe, "Where do you want to move?", "", JOptionPane.PLAIN_MESSAGE, null, adjRooms.toArray(), adjRooms.get(0));
     String selectionString = selectionObject.toString();
-    
+    return selectionString;
   }
+
+  /* Paint take role options */
+  public String takeRoleOptions(List<String> roles) {
+    popframe = new JFrame();
+    popframe.setAlwaysOnTop(true);
+    Object selectionObject = JOptionPane.showInputDialog(popframe, "What role?", "", JOptionPane.PLAIN_MESSAGE, null, roles.toArray(), roles.get(0));
+    String selectionString = selectionObject.toString();
+    return selectionString;
+  } 
 
   public void displayMessage(String s) {
     JOptionPane.showMessageDialog(this, 2, "Message", 0);
@@ -183,14 +206,24 @@ public class Board extends JFrame {
     // Code for the different button clicks
     public void mouseClicked(MouseEvent e) {
   
-      if (e.getSource() == actButton) {
-        System.out.println("Acting is Selected\n");
-      } else if (e.getSource() == reherseButton) {
-        System.out.println("Rehearse is Selected\n");
-      } else if (e.getSource() == moveButton) {
+      if (e.getSource() == moveButton) {
         System.out.println("Move is Selected\n");
-        /* Tell controller the player wants to move */
         gameController.move();
+      } else if (e.getSource() == takeRoleButton) {
+        System.out.println("Take Role is Selected\n");
+        gameController.takeRole();
+      } else if (e.getSource() == actButton) {
+        System.out.println("Act is Selected\n");
+        gameController.act();
+      } else if (e.getSource() == reherseButton) {
+        System.out.println("Reherse is Selected\n");
+        gameController.reherse();
+      } else if (e.getSource() == upgradeButton) {
+        System.out.println("Upgrade is Selected\n");
+        gameController.upgrade();
+      } else if (e.getSource() == endTurnButton) {
+        System.out.println("End Turn is Selected\n");
+        gameController.endTurn();
       }
     }
   

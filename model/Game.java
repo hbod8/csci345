@@ -21,7 +21,7 @@ public class Game {
   public Game(int playerCount, GameController gameController) throws Exception {
     this.gameController = gameController;
     int startingCredits = 0;
-    int startingRank = 0;
+    int startingRank = 1;
     if (playerCount > 1 && playerCount <= 2) {
       this.maxDays = 3;
     } else if (playerCount == 5) {

@@ -92,6 +92,10 @@ public class Player extends Area {
     }
   }
 
+  public boolean takeRole(Role role) {
+    return role.take(this);
+  }
+
   public boolean upgrade(int level, boolean credits) {
     if (level > 6 || level < 2) {
       System.out.println("Sorry, you can only upgrade to a rank of 2-6.");
