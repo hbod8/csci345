@@ -35,13 +35,17 @@ public class GameController {
     /* Create instance of View. */
     this.board = new Board(this);
     this.board.setVisible(true);
-    /* Paint actions */
-    this.board.paintActions(this.curPlayer);
     /* Paint all rooms and scenes */
     List<Room> roomList = new ArrayList<Room>(this.game.getRoomMap().values());
     this.board.paintAllScenes(roomList);
+    /* Paint all players */
+    for (Player p : game.getPlayers()) {
+      this.board.paintPlayer(p);
+    }
     /* Paint the current player */
     this.board.paintPlayer(this.curPlayer);
+    /* Paint actions */
+    this.board.paintActions(this.curPlayer);
   }
 
   public void move() {
@@ -89,15 +93,16 @@ public class GameController {
       if(r.getName().equals(selectedRoleName)) {
         if(curPlayer.getRank() < r.getRank()) {
           displayMessage("Sorry bud, you need a little more experience for that role.");
+          return;
         } else {
           curPlayer.takeRole(r);
-          endTurn();
         }
       }
     }
     /* Update player information in view and location */
     board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
+    endTurn();
   }
 
   public void act() {
@@ -132,6 +137,7 @@ public class GameController {
     /* make sure scene is visible and display it accordingly */
     board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
+    board.paintScene((SetRoom)curPlayer.getRoom());
   }
 
   public void reherse() {

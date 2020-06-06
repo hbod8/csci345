@@ -39,6 +39,7 @@ public class Board extends JFrame {
   /* Action menu and buttons */
   private JPanel menuPanel;
   private JLabel menuLabel;
+  private JLabel playerIcon;
   private JLabel dayLabel;
   private JLabel locationLabel;
   private JLabel rankLabel;
@@ -73,7 +74,7 @@ public class Board extends JFrame {
   private Map<SetRoom, JLabel> shotTokens;
 
   private static final String imageFolder = "assets/images/";
-  private final String[] playerIconColors = {"b", "c", "g", "o", "p", "r", "v", "w", "y"};
+  private final String[] playerIconColors = {"b", "r", "g", "o", "p", "c", "v", "w", "y"};
   private int nextPlayerColor = 0;
 
   public Board(GameController gameController) {
@@ -124,6 +125,8 @@ public class Board extends JFrame {
     layeredPane.add(menuPanel, 0);
     // Create the Menu for action buttons
     this.menuLabel = new JLabel(" --Menu--");
+    /* Create player icon */
+    this.playerIcon = new JLabel();
 
     /* Initalize labels */
     this.dayLabel = new JLabel();
@@ -167,6 +170,9 @@ public class Board extends JFrame {
     menuPanel.removeAll();
     /* Add title */
     menuPanel.add(menuLabel);
+    /* Display player icon */
+    playerIcon.setIcon(this.players.get(p).getIcon());
+    menuPanel.add(playerIcon);
     /* Display player turn */
     playerTurn.setText(" " + p.getName() + "\'s turn.");
     menuPanel.add(playerTurn);
