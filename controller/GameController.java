@@ -48,6 +48,7 @@ public class GameController {
     this.board.paintActions(this.curPlayer);
   }
 
+
   public void move() {
     /* move player */
     if (curPlayer.hasMoved() || curPlayer.hasActed()) {
@@ -127,7 +128,6 @@ public class GameController {
     }
     if (curPlayer.act()) {
       displayMessage("Success!");
-      curPlayer.hasActed(true);
       board.paintScene(((SetRoom)curPlayer.getRoom()));
     } else {
       /* Failed roll */
@@ -135,6 +135,7 @@ public class GameController {
       return;
     }
     /* make sure scene is visible and display it accordingly */
+    curPlayer.hasActed(true);
     board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
     board.paintScene((SetRoom)curPlayer.getRoom());
