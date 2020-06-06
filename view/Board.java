@@ -13,9 +13,11 @@ import javax.swing.JComboBox;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import java.util.List;
+import java.util.Map;
 
 import controller.GameController;
 import model.Game;
@@ -28,24 +30,33 @@ import model.Scene;
 public class Board extends JFrame {
 
   /* Controller instance */
-  GameController gameController;
+  private GameController gameController;
 
   /* Components */
-  JLabel boardLabel;
+  private JLabel boardLabel;
 
   /* Action menu and buttons */
-  JPanel menuPanel;
-  JLabel menuLabel;
-  JButton actButton;
-  JButton reherseButton;
-  JButton moveButton;
+  private JPanel menuPanel;
+  private JLabel menuLabel;
+  private JButton actButton;
+  private JButton reherseButton;
+  private JButton moveButton;
 
   // JLayered Pane
-  JLayeredPane layeredPane;
+  private JLayeredPane layeredPane;
+
+  //Popup
+  JFrame popframe;
 
   /* Image folder location */
-  ImageIcon icon;
+  private ImageIcon icon;
+
+  /* Player map name->component */
+  private Map<Player, JLabel> players;
+
   private static final String imageFolder = "assets/images/";
+  private final String[] playerIconColors = {"b", "c", "g", "o", "p", "r", "v", "w", "y"};
+  private int nextPlayerColor = 0;
 
   public Board(GameController gameController) {
     // Set the title of the JFrame
@@ -57,49 +68,6 @@ public class Board extends JFrame {
     createLabels();
     /* Create action menu */
     createMenu();
-    // Add a scene card to this room
-    // cardlabel = new JLabel();
-    // ImageIcon cIcon = new ImageIcon("01.png");
-    // cardlabel.setIcon(cIcon);
-    // cardlabel.setBounds(20, 65, cIcon.getIconWidth() + 2, cIcon.getIconHeight());
-    // cardlabel.setOpaque(true);
-
-    // Add the card to the lower layer
-    // layeredPane.add(cardlabel, 1);
-
-    /* Creates components for every room */
-    // for (Room room : game.getRoomMap().values()) {
-    //     JComponent roomLabel = new JComponent();
-
-    //     //set bounds for button
-    //     roomComponent.setBounds(room.getX(), room.getY(), room.getW(), room.getH());
-        
-    //     //make button transparent
-    //     roomComponent.setOpaque(false);
-
-    //     //add the button
-    //     layeredPane.add(roomComponent);
-
-    //     //check if room is a setroom
-    //     if(room instanceof SetRoom) {
-    //         //loop through extras (off-card roles)
-    //         for(Role curRole : ((SetRoom)room).getExtras()) {
-    //             JButton button2 = new JButton();
-    //             button2.setBounds(curRole.getX(), curRole.getY(), curRole.getW(), curRole.getH());
-    //             button2.setOpaque(false);
-    //             button2.setContentAreaFilled(false);
-    //             button2.setBorderPainted(false);
-    //         }
-    //         //loop through roles (on-card roles)
-    //         for(Role curRole : ((SetRoom)room).getScene().getRoles()) {
-    //           JButton button3 = new JButton();
-    //           button3.setBounds(curRole.getX(), curRole.getY(), curRole.getW(), curRole.getH());
-    //           button3.setOpaque(false);
-    //           button3.setContentAreaFilled(false);
-    //           button3.setBorderPainted(false);
-    //         }
-    //     }
-    // }
   }
 
   private void setup() {
@@ -128,6 +96,7 @@ public class Board extends JFrame {
     /* Create menu panel */
     this.menuPanel = new JPanel();
     this.menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+    this.menuPanel.setAlignmentY(Component.LEFT_ALIGNMENT);
     // this.menuPanel.setMaximumSize(new Dimension(100, 500));
     this.menuPanel.setBounds(0, 0, 200, 500);
     this.menuPanel.setVisible(true);
@@ -166,11 +135,18 @@ public class Board extends JFrame {
       menuPanel.add(actButton);
       menuPanel.add(reherseButton);
     }
+    menuPanel.validate();
   }
 
   /* @TODO paintPlayer(Player) */
   public void paintPlayer(Player p) {
-
+    if (!this.players.containsKey(p)) {
+      /* Add player */
+      JLabel playerLabel = new JLabel();
+      this.players.put(p, playerLabel);
+      ImageIcon img = new ImageIcon(imageFolder + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
+      playerLabel.setIcon(img);
+    }
   }
 
   /* @TODO paintScene(Scene) */
@@ -180,17 +156,23 @@ public class Board extends JFrame {
 
   /* Paint move options */
   public void moveOptions(List<String> adjRooms) {
-    JComboBox<String> moveRooms = new JComboBox<String>();
-    for (String i : adjRooms) {
-      moveRooms.addItem(i);
-    }
-    JLabel l = new JLabel("Select where to move.");
-    moveRooms.setSelectedIndex(0);
-    moveRooms.addMouseListener(new boardMouseListener());
-    moveRooms.setMaximumSize(new Dimension(100, 16));
-    menuPanel.add(l);
-    menuPanel.add(moveRooms);
-    menuPanel.validate();
+    // JComboBox<String> moveRooms = new JComboBox<String>();
+    // for (String i : adjRooms) {
+    //   moveRooms.addItem(i);
+    // }
+    // JLabel l = new JLabel("Select where to move.");
+    // moveRooms.setSelectedIndex(0);
+    // moveRooms.addMouseListener(new boardMouseListener());
+    // moveRooms.setMaximumSize(new Dimension(100, 16));
+    // moveRooms.setAlignmentY(Component.LEFT_ALIGNMENT);
+    // menuPanel.add(l);
+    // menuPanel.add(moveRooms);
+    // menuPanel.validate();
+    popframe = new JFrame();
+    popframe.setAlwaysOnTop(true);
+    Object selectionObject = JOptionPane.showInputDialog(popframe, "Choose", "Menu", JOptionPane.PLAIN_MESSAGE, null, adjRooms.toArray(), adjRooms.get(0));
+    String selectionString = selectionObject.toString();
+    
   }
 
   public void displayMessage(String s) {
