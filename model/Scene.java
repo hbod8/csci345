@@ -28,17 +28,34 @@ public class Scene {
   public int getBudget() {
     return budget;
   }
+
+  /**
+   * Gets name.
+   * @return String name
+   */
   public String getName() {
     return this.name;
   }
+
+  /**
+   * Gets the image name.
+   * @return String name
+   */
   public String getImageName() { 
     return this.imageName;
   }
 
+  /**
+   * Sets whether scene card is visible.
+   */
   public void setVisible(boolean x) {
     visible = x;
   }
 
+  /**
+   * Returns whether card is visible
+   * @return boolean visible
+   */
   public boolean getVisible() {
     return this.visible;
   }

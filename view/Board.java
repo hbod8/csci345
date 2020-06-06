@@ -54,11 +54,12 @@ public class Board extends JFrame {
   private JButton reherseButton;
   private JButton upgradeButton;
   private JButton endTurnButton;
+  private JButton testButton;
 
   // JLayered Pane
   private JLayeredPane layeredPane;
 
-  //Popup
+  // Popup
   JFrame popframe;
 
   /* Image folder location */
@@ -74,7 +75,7 @@ public class Board extends JFrame {
   private Map<SetRoom, JLabel> shotTokens;
 
   private static final String imageFolder = "assets/images/";
-  private final String[] playerIconColors = {"b", "r", "g", "o", "p", "c", "v", "w", "y"};
+  private final String[] playerIconColors = { "b", "r", "g", "o", "p", "c", "v", "w", "y" };
   private int nextPlayerColor = 0;
 
   public Board(GameController gameController) {
@@ -105,12 +106,11 @@ public class Board extends JFrame {
   }
 
   private void createLabels() {
-    // Create the deadwood board
+    /* Create the deadwood board */
     boardLabel = new JLabel();
     boardLabel.setIcon(icon);
     boardLabel.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
-
-    // Add the board to the lowest layer
+    /* Add the board to the lowest layer */
     layeredPane.add(boardLabel, 0);
   }
 
@@ -119,15 +119,13 @@ public class Board extends JFrame {
     this.menuPanel = new JPanel();
     this.menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
     this.menuPanel.setAlignmentY(Component.LEFT_ALIGNMENT);
-    // this.menuPanel.setMaximumSize(new Dimension(100, 500));
     this.menuPanel.setBounds(icon.getIconWidth(), 0, 200, 500);
     this.menuPanel.setVisible(true);
     layeredPane.add(menuPanel, 0);
-    // Create the Menu for action buttons
+    /* Create the Menu for action buttons */
     this.menuLabel = new JLabel(" --Menu--");
     /* Create player icon */
     this.playerIcon = new JLabel();
-
     /* Initalize labels */
     this.dayLabel = new JLabel();
     this.locationLabel = new JLabel();
@@ -137,7 +135,6 @@ public class Board extends JFrame {
     this.creditsLabel = new JLabel();
     this.reherseLabel = new JLabel();
     this.playerTurn = new JLabel();
-
     /* Initalize buttons */
     moveButton = new JButton("Move");
     moveButton.setBackground(Color.white);
@@ -162,9 +159,17 @@ public class Board extends JFrame {
     endTurnButton = new JButton("End Turn");
     endTurnButton.setBackground(Color.white);
     endTurnButton.addMouseListener(new boardMouseListener());
+
+    testButton = new JButton("TEST");
+    testButton.setBackground(Color.white);
+    testButton.addMouseListener(new boardMouseListener());
   }
 
-  /* paint actions */
+  /**
+   * Paints the player dice icon on board.
+   * 
+   * @param p Player to paint
+   */
   public void paintActions(Player p) {
     /* Clear menu */
     menuPanel.removeAll();
@@ -210,32 +215,31 @@ public class Board extends JFrame {
     }
     if (!p.hasActed()) {
       menuPanel.add(takeRoleButton);
-      if(p.getRoom().getName().equals("office")) {
+      if (p.getRoom().getName().equals("office")) {
         menuPanel.add(upgradeButton);
       }
     }
     menuPanel.add(endTurnButton);
+    menuPanel.add(testButton);
     menuPanel.validate();
   }
 
-  /* @TODO paintPlayer(Player) */
   public void paintPlayer(Player p) {
     if (!this.players.containsKey(p)) {
-      /* Add player */
+      /* Add new player */
       JLabel playerLabel = new JLabel();
-      ImageIcon img = new ImageIcon(imageFolder + "dice/" + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
+      ImageIcon img = new ImageIcon(
+          imageFolder + "dice/" + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
       playerLabel.setIcon(img);
-      // playerLabel.setBounds(p.getRoom().getX(), p.getRoom().getY(), 40, 40);
-      // System.out.println(imageFolder + "dice/" + this.playerIconColors[nextPlayerColor] + p.getRank() + ".png");
       nextPlayerColor++;
       layeredPane.add(playerLabel, 2);
-      // layeredPane.add(playerLabel, 0);
       this.players.put(p, playerLabel);
     }
     JLabel playerLabel = this.players.get(p);
     if (p.onRole()) {
-      if (p.getRoom() instanceof SetRoom && ((SetRoom)p.getRoom()).getScene() != null && ((SetRoom)p.getRoom()).getScene().getRoles().contains(p.getRole())) {
-        playerLabel.setBounds(p.getRoom().getX() + p.getRole().getX(),p.getRoom().getY() + p.getRole().getY(), 46, 46);
+      if (p.getRoom() instanceof SetRoom && ((SetRoom) p.getRoom()).getScene() != null
+          && ((SetRoom) p.getRoom()).getScene().getRoles().contains(p.getRole())) {
+        playerLabel.setBounds(p.getRoom().getX() + p.getRole().getX(), p.getRoom().getY() + p.getRole().getY(), 46, 46);
       } else {
         playerLabel.setBounds(p.getRole().getX(), p.getRole().getY(), 46, 46);
       }
@@ -249,16 +253,12 @@ public class Board extends JFrame {
   public void paintAllScenes(List<Room> rooms) {
     for (Room r : rooms) {
       if (r instanceof SetRoom) {
-        paintScene((SetRoom)r);
+        paintScene((SetRoom) r);
       }
     }
   }
 
   public void paintScene(SetRoom r) {
-    if (r.getScene() == null) {
-      return;
-    }
-    Scene s = r.getScene();
     if (!this.scenes.containsKey(r)) {
       /* Add scene */
       JLabel sceneLabel = new JLabel();
@@ -270,16 +270,23 @@ public class Board extends JFrame {
       layeredPane.add(shotLabel, 2);
       this.shotTokens.put(r, shotLabel);
     }
-    JLabel sceneLabel = this.scenes.get(r);
-    ImageIcon sceneIcon;
-    if (!s.visible) {
-      sceneIcon = new ImageIcon(imageFolder + "CardBack-small.jpg");
-      sceneLabel.setIcon(sceneIcon);
+    if (r.getScene() == null) {
+      JLabel sceneLabel = this.scenes.get(r);
+      sceneLabel.setVisible(false);
     } else {
-      sceneIcon = new ImageIcon(imageFolder + "cards/" + s.getImageName());
-      sceneLabel.setIcon(sceneIcon);
+      Scene s = r.getScene();
+      JLabel sceneLabel = this.scenes.get(r);
+      ImageIcon sceneIcon;
+      if (!s.visible) {
+        sceneIcon = new ImageIcon(imageFolder + "CardBack-small.jpg");
+        sceneLabel.setIcon(sceneIcon);
+      } else {
+        sceneIcon = new ImageIcon(imageFolder + "cards/" + s.getImageName());
+        sceneLabel.setIcon(sceneIcon);
+      }
+      sceneLabel.setVisible(true);
+      sceneLabel.setBounds(r.getX(), r.getY(), 205, 115);
     }
-    sceneLabel.setBounds(r.getX(), r.getY(), 205, 115);
     paintShotCounter(r);
     layeredPane.validate();
     layeredPane.repaint();
@@ -287,26 +294,14 @@ public class Board extends JFrame {
 
   private void paintShotCounter(SetRoom r) {
     JLabel shotCounterLabel = this.shotTokens.get(r);
-    shotCounterLabel.setBounds(r.getShotPosition().getX(), r.getShotPosition().getY(), r.getShotPosition().getW(), r.getShotPosition().getH());
+    if (r.getScene() == null) {
+      shotCounterLabel.setVisible(false);
+    } else {
+      shotCounterLabel.setVisible(true);
+      shotCounterLabel.setBounds(r.getShotPosition().getX(), r.getShotPosition().getY(), r.getShotPosition().getW(),
+          r.getShotPosition().getH());
+    }
   }
-
-  /* Paint move options */
-  // public String moveOptions(List<String> adjRooms) {
-  //   popframe = new JFrame();
-  //   popframe.setAlwaysOnTop(true);
-  //   Object selectionObject = JOptionPane.showInputDialog(popframe, "Where do you want to move?", "", JOptionPane.PLAIN_MESSAGE, null, adjRooms.toArray(), adjRooms.get(0));
-  //   String selectionString = selectionObject.toString();
-  //   return selectionString;
-  // }
-
-  /* Paint take role options */
-  // public String takeRoleOptions(List<String> roles) {
-  //   popframe = new JFrame();
-  //   popframe.setAlwaysOnTop(true);
-  //   Object selectionObject = JOptionPane.showInputDialog(popframe, "What role?", "", JOptionPane.PLAIN_MESSAGE, null, roles.toArray(), roles.get(0));
-  //   String selectionString = selectionObject.toString();
-  //   return selectionString;
-  // } 
 
   public void displayMessage(String s) {
     JOptionPane.showMessageDialog(this, s, "Message", 0);
@@ -315,15 +310,15 @@ public class Board extends JFrame {
   public String selectionBox(String prompt, List<String> selections) {
     popframe = new JFrame();
     popframe.setAlwaysOnTop(true);
-    Object selectionObject = JOptionPane.showInputDialog(popframe, prompt, "", JOptionPane.PLAIN_MESSAGE, null, selections.toArray(), selections.get(0));
+    Object selectionObject = JOptionPane.showInputDialog(popframe, prompt, "", JOptionPane.PLAIN_MESSAGE, null,
+        selections.toArray(), selections.get(0));
     String selectionString = selectionObject.toString();
     return selectionString;
   }
 
   class boardMouseListener implements MouseListener {
-    // Code for the different button clicks
+    /* Code for the different button clicks */
     public void mouseClicked(MouseEvent e) {
-  
       if (e.getSource() == moveButton) {
         System.out.println("Move is Selected\n");
         gameController.move();
@@ -342,18 +337,21 @@ public class Board extends JFrame {
       } else if (e.getSource() == endTurnButton) {
         System.out.println("End Turn is Selected\n");
         gameController.endTurn();
+      } else if (e.getSource() == testButton) {
+        System.out.println("TEST!\n");
+        gameController.test();
       }
     }
-  
+
     public void mousePressed(MouseEvent e) {
     }
-  
+
     public void mouseReleased(MouseEvent e) {
     }
-  
+
     public void mouseEntered(MouseEvent e) {
     }
-  
+
     public void mouseExited(MouseEvent e) {
     }
   }

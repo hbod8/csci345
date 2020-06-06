@@ -9,6 +9,8 @@ import model.Player;
 import model.Role;
 import model.SetRoom;
 import model.Room;
+import model.Area;
+import model.Scene;
 import view.Board;
 
 public class GameController {
@@ -226,5 +228,33 @@ public class GameController {
 
   public int getDay() {
     return game.getDay();
+  }
+
+  /* TESTING PUPOSES ONLY */
+  public void test() {
+    System.out.println("Test Room:");
+    Room room = curPlayer.getRoom();
+    System.out.printf("\t%s @(%d, %d) %d x %d:\n\t\tAdjacent Rooms:\n", room.getName(), room.getX(), room.getY(), room.getW(), room.getH());
+    for (String adj : room.getAdjRooms()) {
+      System.out.printf("\t\t\t%s\n", adj);
+    }
+    if (room instanceof SetRoom) {
+      System.out.printf("\t\tShots:\n");
+      for (Area area : ((SetRoom) room).getShotMap().values()) {
+        System.out.printf("\t\t\t@(%d, %d) %d x %d\n", area.getX(), area.getY(), area.getW(), area.getH());
+      }
+      System.out.printf("\t\tRoles:\n");
+      for (Role role : ((SetRoom) room).getExtras()) {
+        System.out.printf("\t\t\t%s (%d) @(%d, %d) %d x %d\n", role.getName(), role.getRank(), role.getX(), role.getY(), role.getW(), role.getH());
+      }
+    }
+    System.out.println("Test Scene:");
+    if (curPlayer.getRoom() instanceof SetRoom && ((SetRoom)curPlayer.getRoom()).getScene() != null) {
+      Scene scene = ((SetRoom)curPlayer.getRoom()).getScene();
+      System.out.printf("\t%s (%d) %s:\n", scene.getName(), scene.getBudget(), scene.getImageName());
+      for (Role role : scene.getRoles()) {
+        System.out.printf("\t\t%s (%d) @(%d, %d) %d x %d\n", role.getName(), role.getRank(), role.getX(), role.getY(), role.getW(), role.getH());
+      }
+    }
   }
 }

@@ -12,15 +12,18 @@ public class Role extends Area {
   public void free() {
     this.player = null;
   }
+
   /**
-   * @return the rehersals
+   * Returns role if taken
+   * @return if taken
    */
-  // public int getRehersals() {
-  //   return this.rehersals;
-  // }
   public boolean isTaken() {
     return (this.player != null);
   }
+
+  /**
+   * Puts player on role
+   */
   public void take(Player player) {
     this.player = player;
   }
@@ -46,6 +49,10 @@ public class Role extends Area {
     return this.requiredRank;
   }
 
+  /**
+   * Returns player on role
+   * @return player
+   */
   public Player getPlayer() {
     return this.player;
   }

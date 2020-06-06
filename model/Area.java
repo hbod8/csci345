@@ -1,7 +1,5 @@
 package model;
 
-import java.io.IOException;
-
 public class Area {
   private int x;
   private int y;
@@ -15,18 +13,34 @@ public class Area {
     this.w = w;
   }
 
+  /**
+   * Gets X value.
+   * @return coordinate
+   */
   public int getX() {
     return this.x;
   }
 
+  /**
+   * Gets Y value.
+   * @return coordinate
+   */
   public int getY() {
     return this.y;
   }
 
+  /**
+   * Gets Height value.
+   * @return coordinate
+   */
   public int getH() {
     return this.h;
   }
 
+  /**
+   * Gets Width value.
+   * @return coordinate
+   */
   public int getW() {
     return this.w;
   }

@@ -79,7 +79,7 @@ public class Player {
   public void freeRole() {
     if (this.room instanceof SetRoom) {
       for (Role r : this.getRoles()) {
-        if (r.getPlayer().equals(this)) {
+        if (r.getPlayer() != null && r.getPlayer().equals(this)) {
           r.free();
         }
       }

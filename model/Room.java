@@ -17,6 +17,11 @@ public class Room extends Area {
   public String getName() {
     return name;
   }
+
+  /**
+   * Check if room is adjacent to given room
+   * @return boolean isAdjacent
+   */
   public boolean isAdjacent(String roomname) {
     for (String name : this.adjacentRooms) {
       if (name.equals(roomname)) {
@@ -25,6 +30,11 @@ public class Room extends Area {
     }
     return false;
   }
+
+  /**
+   * Gets list of adjacent rooms
+   * @return List<String> of room names
+   */
   public List<String> getAdjRooms() {
     return this.adjacentRooms;
   }
