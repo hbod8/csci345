@@ -282,7 +282,7 @@ public class Board extends JFrame {
   } 
 
   public void displayMessage(String s) {
-    JOptionPane.showMessageDialog(this, 2, "Message", 0);
+    JOptionPane.showMessageDialog(this, s, "Message", 0);
   }
 
   class boardMouseListener implements MouseListener {
