@@ -21,3 +21,13 @@ Game and Player share a significant amount of data and therefore have some insta
 ## Role, Room, Scene, and SetRoom
 
 These classes use only use data coupling as it only implements getters and setters and does not violate information hiding.
+
+# Design Patterns
+
+## Model View Controller
+
+We heavily relied on the MVC design pattern throughout our implementation of deadwood.  Our 3 packages reflect this idea as each package reflects one of the structures.
+
+## Adapter
+
+Although not fully implemented, while making our conroller class we thought about how portable it would be if we wanted to change the view.  We coudld even return too a commandline implementation without changing GameController.java or the model.
