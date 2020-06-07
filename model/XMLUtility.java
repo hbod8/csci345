@@ -1,15 +1,20 @@
 package model;
 
 import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
+/**
+ * XML Utility hold all methods for parsing data from XML files.  It can parse scenes from cards.xml and rooms from board.java.
+ * 
+ * Default files to read from: 'assets/board.xml' & 'assets/cards.xml'
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class XMLUtility {
   public static Map<String, Room> parseRoomsFromXML() {
     Map<String, Room> roomList = new HashMap<String, Room>();

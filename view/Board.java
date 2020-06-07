@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JComboBox;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -21,14 +20,21 @@ import java.util.Map;
 import java.util.HashMap;
 
 import controller.GameController;
-import model.Game;
 import model.Player;
 import model.Room;
-import model.Role;
 import model.SetRoom;
 import model.Scene;
 
+/**
+ * Board represents a visual representation of the Deadwood game using java swing.
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class Board extends JFrame {
+
+  /* Serializable version (even though class is never serialized). */
+  public static final long serialVersionUID = 0;
 
   /* Controller instance */
   private GameController gameController;
@@ -48,6 +54,7 @@ public class Board extends JFrame {
   private JLabel creditsLabel;
   private JLabel reherseLabel;
   private JLabel playerTurn;
+  private JLabel playerScore;
   private JButton moveButton;
   private JButton takeRoleButton;
   private JButton actButton;
@@ -56,10 +63,10 @@ public class Board extends JFrame {
   private JButton endTurnButton;
   private JButton testButton;
 
-  // JLayered Pane
+  /* JLayered Pane */
   private JLayeredPane layeredPane;
 
-  // Popup
+  /* Popup */
   JFrame popframe;
 
   /* Image folder location */
@@ -135,6 +142,7 @@ public class Board extends JFrame {
     this.creditsLabel = new JLabel();
     this.reherseLabel = new JLabel();
     this.playerTurn = new JLabel();
+    this.playerScore = new JLabel();
     /* Initalize buttons */
     moveButton = new JButton("Move");
     moveButton.setBackground(Color.white);
@@ -181,6 +189,9 @@ public class Board extends JFrame {
     /* Display player turn */
     playerTurn.setText(" " + p.getName() + "\'s turn.");
     menuPanel.add(playerTurn);
+    /* Display player score */
+    playerScore.setText("Score: " + p.calculateScore());
+    menuPanel.add(playerScore);
     /* Display Day */
     dayLabel.setText(" Day: " + gameController.getDay());
     menuPanel.add(dayLabel);
@@ -197,7 +208,7 @@ public class Board extends JFrame {
       menuPanel.add(roleLabel);
     }
     /* Display Cash */
-    cashLabel.setText(" Cash: " + p.getDollars());
+    cashLabel.setText(" Dollars: " + p.getDollars());
     menuPanel.add(cashLabel);
     /* Display Credits */
     creditsLabel.setText(" Credits:" + p.getCredits());

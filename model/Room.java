@@ -2,6 +2,12 @@ package model;
 
 import java.util.List;
 
+/**
+ * Room represents an area a player can be located in Deadwood.  It contains adjacent rooms, name and position on the game board.
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class Room extends Area {
   private List<String> adjacentRooms;
   private String name;

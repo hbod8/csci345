@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * Area is a simple implementation of a displayable object.  Its responsibilities include coorinate position and size.
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class Area {
   private int x;
   private int y;

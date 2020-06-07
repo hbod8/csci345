@@ -2,6 +2,12 @@ package model;
 
 import java.util.List;
 
+/**
+ * Scene represents a scene card in Deadwood.  Scene's responsibilities include roles, budget, name, image name, and if its visible to the player.
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class Scene {
   private List<Role> roles;
   public boolean visible = false;
@@ -14,6 +20,9 @@ public class Scene {
     this.budget = budget;
     this.name = name;
     this.imageName = imageName;
+    for(Role curRole : roles) {
+      curRole.setInScene(true);
+    }
   }
   /**
    * @return the roles

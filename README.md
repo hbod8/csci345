@@ -4,7 +4,7 @@ Authors: Harry Saliba, Thomas Bidinger
 
 ## Compile:
 
-`javac Deadwood.java`
+`javac model/*.java controller/*.java view/*.java *.java`
 
 ## Run :
 
@@ -12,4 +12,4 @@ Authors: Harry Saliba, Thomas Bidinger
 
 ## Clean:
 
-`find . -type f -name '*.o' -delete`
+`rm model/*.class controller/*.class view/*.class *.class`

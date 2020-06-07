@@ -13,6 +13,16 @@ import model.Area;
 import model.Scene;
 import view.Board;
 
+/**
+ * Game controller is the controller for the Deadwood game.
+ * It takes player input in the form of mehthod calls and
+ * changes the required data in the model (Game). It also
+ * makes sure the view is up-to-date by calling paint
+ * methods in the view (Board).
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class GameController {
 
   /* Model instance */
@@ -50,7 +60,9 @@ public class GameController {
     this.board.paintActions(this.curPlayer);
   }
 
-
+  /**
+   * Calls player to move. Checks if they qualify. Paints changes.
+   */
   public void move() {
     /* move player */
     if (curPlayer.hasMoved() || curPlayer.hasActed()) {
@@ -74,6 +86,9 @@ public class GameController {
     board.paintPlayer(curPlayer);
   }
 
+  /**
+   * Calls for player to take role.  Paints changes.
+   */
   public void takeRole() {
     /* Make sure they are in a set room */
     if (!(curPlayer.getRoom() instanceof SetRoom)) {
@@ -109,6 +124,9 @@ public class GameController {
     endTurn();
   }
 
+  /**
+   * Calls player to act.  Checks if they qualify.
+   */
   public void act() {
     /* Make sure they qualify for acting that turn */
     if (curPlayer.hasMoved()) {
@@ -129,6 +147,14 @@ public class GameController {
       displayMessage("Whoops looks like the set is closed for the day.");
       return;
     }
+    /* Make sure player has role */
+    if (curPlayer.getRole() == null) {
+      displayMessage("Whoops looks like you need a role.");
+      return;
+    }
+    if (((SetRoom)curPlayer.getRoom()).getShots() == 1) {
+      game.bonusPayout((SetRoom)curPlayer.getRoom());
+    }
     if (curPlayer.act()) {
       displayMessage("Success!");
       board.paintScene(((SetRoom)curPlayer.getRoom()));
@@ -141,8 +167,21 @@ public class GameController {
     board.paintActions(curPlayer);
     board.paintPlayer(curPlayer);
     board.paintScene((SetRoom)curPlayer.getRoom());
+    if(game.getScenesOnBoard() == 1) {
+      game.placeScenes();
+      for(Player curPlayer2 : game.getPlayers()) {
+        curPlayer2.move(game.getRoomMap().get("trailer"));
+      }
+      game.nextDay();
+      if(game.getDay() == game.getMaxDays()) {
+        endGame();
+      }
+    }
   }
 
+  /**
+   * Calls for player to reherse. Checks room status.
+   */
   public void reherse() {
     /* Check if player is in a room with roles*/
     if (!(curPlayer.getRoom() instanceof SetRoom)) {
@@ -172,6 +211,9 @@ public class GameController {
     endTurn();
   }
 
+  /** 
+   * Calls upgrade to player rank.  Prompts use though pop-up window for desired rank.
+   */
   public void upgrade() {
     /* Display upgrade options */
     List<String> ranks = Arrays.asList(new String[]{"2", "3", "4", "5", "6"});
@@ -194,8 +236,13 @@ public class GameController {
     }
     /* Update player info in view */
     board.paintActions(curPlayer);
+    board.paintPlayer(curPlayer);
+    board.paintScene((SetRoom)curPlayer.getRoom());
   }
 
+  /** 
+   * Ends turn.  Resets hasMoved and hasActed and gets next player.  Also checks for next day and end of game.
+   */
   public void endTurn() {
     this.curPlayer.hasActed(false);
     this.curPlayer.hasMoved(false);
@@ -228,6 +275,12 @@ public class GameController {
 
   public int getDay() {
     return game.getDay();
+  }
+
+  private void endGame() {
+    //display player with high scores
+    displayMessage("The winner is... " + game.getScores().entrySet().iterator().next().getKey().getName());
+    System.exit(1);
   }
 
   /* TESTING PUPOSES ONLY */

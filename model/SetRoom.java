@@ -3,11 +3,18 @@ package model;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * SetRoom represents a room a scene can take place.  Its responsibilities include the scene, "off-card" roles, and position of the shot counter.
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class SetRoom extends Room {
   private List<Role> extras;
   private Scene scene;
   private Map<Integer, Area> shots;
   private int shot = 1;
+  private int endingBudget;
   private int shotsLeft;
   public SetRoom(List<String> adjacentRooms, String name, List<Role> extras, Map<Integer, Area> shots, int x, int y, int w, int h) {
     super(adjacentRooms, name, x, y, w, h);
@@ -58,7 +65,20 @@ public class SetRoom extends Room {
     this.shotsLeft--;
   }
 
+  /**
+   * Returns number of shots until scene wraps.
+   * 
+   * @return number of shots left
+   */
   public int getShots() {
     return this.shotsLeft;
+  }
+
+  public int getBudget() {
+    return endingBudget;
+  }
+
+  public void setBudget(int newBudget) {
+    endingBudget = newBudget;
   }
 }

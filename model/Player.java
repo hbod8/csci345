@@ -5,7 +5,10 @@ import java.util.Random;
 import java.util.List;
 import java.util.LinkedList;
 
-
+/**
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class Player {
   private int credits = 0;
   private int dollars = 0;
@@ -14,7 +17,6 @@ public class Player {
   private boolean hasMoved = false;
   private boolean hasActed = false;
   private Room room;
-  public boolean inScene;
   private String name;
   Random dice = new Random();
 
@@ -32,10 +34,14 @@ public class Player {
     this.room = startRoom;
   }
 
-  //performs acting////////////////
+  /**
+   * Performs acting
+   * @return if successful
+   */
   public boolean act() {
     int roll = 0;
     roll = dice.nextInt(6) + 1;
+    boolean inscene = this.getRole().getInScene();
     
     // act...
     //successful roll
@@ -43,11 +49,13 @@ public class Player {
       //decrement shot counter
       ((SetRoom)this.room).shoot();
       if (((SetRoom)this.room).getShots() < 1) {
+        ((SetRoom)this.room).setBudget(((SetRoom)this.room).getScene().getBudget());
         ((SetRoom)this.room).setScene(null);
+        this.freeRole();
       }
       
       //if on/off the card
-      if(inScene) {
+      if(inscene) {
         this.credits = this.credits + 2;
       }else {
         this.dollars++;
@@ -55,7 +63,7 @@ public class Player {
       }
     //failed roll
     } else {
-      if(!inScene) {
+      if(!this.getRole().getInScene()) {
         this.dollars++;
       }
       return false;
@@ -63,19 +71,31 @@ public class Player {
     return true;
   }
 
+  /**
+   * Increments rehearse tokens
+   */
   public void rehearse() {
     this.practiceChips++;
   }
 
+  /**
+   * Moves player, resets rehearsals
+   */
   public void move(Room newroom) {
     this.room = newroom;
     this.practiceChips = 0;
   }
 
+  /**
+   * Takes given role
+   */
   public void takeRole(Role role) {
     role.take(this);
   }
 
+  /**
+   * Frees the role from player
+   */
   public void freeRole() {
     if (this.room instanceof SetRoom) {
       for (Role r : this.getRoles()) {
@@ -86,6 +106,10 @@ public class Player {
     }
   }
 
+  /**
+   * Performs upgrading
+   * @return if successful
+   */
   public boolean upgrade(int level, boolean credits) {
     if (level > 6 || level < 2) {
       return false;
@@ -127,7 +151,10 @@ public class Player {
     return false;
   }
 
-  //returns Role object that player is on
+  /**
+   * Get current role
+   * @return Role player is on
+   */
   public Role getRole() {
     if(this.room instanceof SetRoom) {
       for(Role curRole : ((SetRoom)this.room).getExtras()) {
@@ -146,7 +173,10 @@ public class Player {
     return null;
   }
  
-  /* returns list of roles in the rooms that a player is in */
+  /**
+   * Get list of roles in room player is in
+   * @return List of roles
+   */
   public List<Role> getRoles() {
     List<Role> roles = new LinkedList<Role>();
     if(this.room instanceof SetRoom) {
@@ -160,6 +190,13 @@ public class Player {
       }
     }
     return roles;
+  }
+
+  /**
+   * Calculates the score of the given players
+   */
+  public int calculateScore() {
+    return (this.getRank() * 5) + this.rank + this.dollars;
   }
 
   /**
@@ -193,6 +230,10 @@ public class Player {
     return name;
   }
 
+  /**
+   * gets rehearsals
+   * @return rehearsal tokens
+   */
   public int getTokens() {
     return this.practiceChips;
   }
@@ -227,19 +268,35 @@ public class Player {
     this.name = name;
   }
 
+  /**
+   * Whether or not player has moved this turn
+   * @return if player has moved
+   */
   public boolean hasMoved() {
     return hasMoved;
   }
 
+  /**
+   * Whether or not player has acted this turn
+   * @return if player has acted
+   */
   public boolean hasActed() {
     return hasActed;
   }
 
+  /**
+   * Sets whether player has moved.
+   * @return set value
+   */
   public boolean hasMoved(boolean b) {
     this.hasMoved = b;
     return b;
   }
 
+  /**
+   * Sets whether player has acted
+   * @return set value
+   */
   public boolean hasActed(boolean b) {
     this.hasActed = b;
     return b;

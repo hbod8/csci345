@@ -1,9 +1,18 @@
 package model;
 
+/**
+ * Role represents a possibly actable role a Deadwood player can have.
+ * Its responsibilites include required rank to take the role, the
+ * current player on the role, and its name.
+ * 
+ * @author Harry Saliba
+ * @author Thomas Bidinger
+ */
 public class Role extends Area {
   private Player player;
   private int requiredRank;
   private String name;
+  private boolean inScene = false;
   public Role(int requiredRank, String name, int x, int y, int w, int h) {
     super(x, y, h, w);
     this.requiredRank = requiredRank;
@@ -55,6 +64,21 @@ public class Role extends Area {
    */
   public Player getPlayer() {
     return this.player;
+  }
+
+  /**
+   * @param newVal the inScene value to be set
+   */
+  public void setInScene(boolean newVal) {
+    this.inScene = newVal;
+  }
+
+  /**
+   * Returns whether on card
+   * @return inscene
+   */
+  public boolean getInScene() {
+    return this.inScene;
   }
   
 }

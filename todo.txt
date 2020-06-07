@@ -1,9 +1,4 @@
 ----Things we still need to do.----
-- Rehearse when not on a role (but in a room)
-- Upgrade needs to be implemented
-- Shot tokens (Broekn)
+- Bonus money when scene is finshed
 - Ending the game
 - Player scores / winner
-
-Call paint shots on act
-Can act when 1 shot left
