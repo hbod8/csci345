@@ -196,7 +196,7 @@ public class Player {
    * Calculates the score of the given players
    */
   public int calculateScore() {
-    return (this.getRank() * 5) + this.rank + this.dollars;
+    return (this.rank * 5) + this.credits + this.dollars;
   }
 
   /**
